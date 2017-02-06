@@ -5,6 +5,7 @@
 #ifndef AEBINARY_BINARYNODE_H
 #define AEBINARY_BINARYNODE_H
 
+
 class BinaryNode {
 public:
     BinaryNode(int* array,int x, int y, BinaryNode* p);
@@ -17,5 +18,5 @@ public:
     BinaryNode* right;
 };
 
-#endif /* BINARYNODE_H_ */
 
+#endif //AEBINARY_BINARYNODE_H

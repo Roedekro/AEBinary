@@ -2,6 +2,13 @@
 // Created by Martin on 06-02-2017.
 //
 
+/*
+ * BinaryNode.cpp
+ *
+ *  Created on: 27/01/2017
+ *      Author: Martin
+ */
+
 #include "BinaryNode.h"
 #include <iostream>
 
