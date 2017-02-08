@@ -102,8 +102,8 @@ void vebRecursiveSubBFS(int* bfs, int* ret, int x, int start, int h) {
     ret[start] = bfs[x];
     cout << "BFS placed " << bfs[x] << " at " << start << '\n';
     if(h != 1) {
-        vebRecursiveSubBFS(bfs,ret,x*2,start+1,h-1); // Venstre barn
-        vebRecursiveSubBFS(bfs,ret,x*2+1,start+2,h-1); // Højre barn
+        vebRecursiveSubBFS(bfs,ret,x*2,start*2,h-1); // Venstre barn
+        vebRecursiveSubBFS(bfs,ret,x*2+1,start*2+1,h-1); // Højre barn
     }
 
 }
@@ -124,7 +124,7 @@ void buildVEBBasedOnBFS(int* bfs, int* veb, int x, int y, int start) {
     }
     int n2 = pow(2,cut2)-1; // Bottom Trees
 
-    cout << cut << "," << n1 << "," << cut2 << "," << n2 << '\n';
+    cout << cut << "," << n1 << "," << cut2 << "," << n2 << "," << x << "," << y << '\n';
 
     int numberBottomTrees = (y-x+1-n1)/n2;
 
@@ -196,6 +196,7 @@ void buildPointerVEBRecursive(int* bfs, int* veb, int* helper, int x, int y, int
     // Bottom trees
     // Byg midlertidige arrays og send ned
     cout << depth << "Bottom\n";
+    int newBFSpos = bfspos << cut2;
     for(int i = 0; i < numberBottomTrees; i++) {
         int* tempArray = new int[n2+1];
         int heightB = log2(n2+1);
@@ -204,7 +205,8 @@ void buildPointerVEBRecursive(int* bfs, int* veb, int* helper, int x, int y, int
         //vebRecursiveSubBFS(bfs,tempArray,x+n1+n2*i,1,heightB);
         //buildPointerVEBRecursive(tempArray,veb,helper,1,n2,start+n1+i*n2,depth+cut,bfspos+n1+i*n2,n);
         //buildPointerVEBRecursive(tempArray,veb,helper,1,n2,start+n1+i*n2,depth+cut,pow(2,depth+cut-1)+i,n);
-        buildPointerVEBRecursive(tempArray,veb,helper,1,n2,start+n1+i*n2,depth+cut,pow(2,depth+cut-1)+i+((bfspos-pow(2,depth-1))*2),n);
+        //buildPointerVEBRecursive(tempArray,veb,helper,1,n2,start+n1+i*n2,depth+cut,pow(2,depth+cut-1)+i+((bfspos-pow(2,depth-1))*2),n);
+        buildPointerVEBRecursive(tempArray,veb,helper,1,n2,start+n1+i*n2,depth+cut,newBFSpos+i,n);
         delete(tempArray);
     }
 
@@ -470,7 +472,7 @@ int main(int argc, char* argv[]) {
 
 
 
-    n = 15;
+    n = 31;
 
     // Sorted array
     int* array = new int[n+1];
