@@ -30,6 +30,28 @@ using namespace std;
 
 }*/
 
+int pos(int d, int i, int* array) {
+
+    // i = BSF position, and d = depth
+    // Pos[d] = Pos[D[d]] + T[d] + (i AND T[d]) * B[d]
+    // array har form B[d] T[d] D[d] dvs. size af B, size af T og Ts dybde.
+
+    if(d == 1) {
+        return 1;
+    }
+
+    // Pos[D[d]
+    int newI = i >> 1;
+    int posDd = pos(array[d*3],newI,array);
+    int iANDT = i & array[d*3-1];
+    int final = iANDT * array[d*3-2];
+
+    int pos = posDd + array[d*3-1] + final;
+
+    return pos;
+
+}
+
 void buildVEBhelper(int* array, int height, int totalHeight, int start, bool isTop) {
 
     // Store: Size of bottom tree rooted at depth d B[d],
@@ -73,6 +95,7 @@ void buildVEBhelper(int* array, int height, int totalHeight, int start, bool isT
     }*/
 
 }
+
 
 void vebRecursiveSubBFS(int* bfs, int* ret, int x, int start, int h) {
 
@@ -120,6 +143,70 @@ void buildVEBBasedOnBFS(int* bfs, int* veb, int x, int y, int start) {
         delete(tempArray);
     }
 
+
+}
+
+void buildPointerVEBRecursive(int* bfs, int* veb, int* helper, int x, int y, int start, int depth, int bfspos, int n) {
+
+    if(x == y) {
+        veb[start*4-3] = bfs[x];
+        if(depth == 1) {
+            veb[start*4-2] = 0;
+        }
+        else {
+            veb[start*4-2] = pos(depth-1,bfspos/2,helper)*4-3; // Parent
+            cout << "Parent " << bfs[x] << "," << veb[start*4-2] << "," << bfspos << "," << depth-1 << '\n';
+        }
+
+        if(bfspos*2 > n) {
+            veb[start*4-1] = 0;
+        }
+        else {
+            veb[start*4-1] = pos(depth+1,bfspos*2,helper)*4-3; // Left
+        }
+
+        cout << "Trying to find " << bfspos*2 << " at depth="<< depth+1 << '\n';
+        cout << "Found " << veb[start*4-1] << '\n';
+        if (bfspos*2 + 1 > n) {
+            veb[start*4] = 0; // Right
+        }
+        else {
+            veb[start*4] = pos(depth+1,bfspos*2+1,helper)*4-3; // Right
+        }
+        cout << "Placed " << bfs[x] << " at " << start*4-3 << " - " << veb[start*4-2] << "," << veb[start*4-1] << "," << veb[start*4]  << "," <<  bfspos <<'\n';
+        return;
+    }
+    int height = log2(y-x+1+1); // Antag at n = 2^x - 1
+    int cut = height / 2;
+    int n1 = pow(2,cut)-1; // Top tree
+    int cut2 = height / 2;
+    if(height % 2 == 1) {
+        cut2++;
+    }
+    int n2 = pow(2,cut2)-1; // Bottom Trees
+
+    cout << cut << "," << n1 << "," << cut2 << "," << n2 << '\n';
+
+    int numberBottomTrees = (y-x+1-n1)/n2;
+
+    // Top tree
+    cout << depth << " Top\n";
+    buildPointerVEBRecursive(bfs,veb,helper,x,x+n1-1,start,depth,bfspos,n);
+
+    // Bottom trees
+    // Byg midlertidige arrays og send ned
+    cout << depth << "Bottom\n";
+    for(int i = 0; i < numberBottomTrees; i++) {
+        int* tempArray = new int[n2+1];
+        int heightB = log2(n2+1);
+        vebRecursiveSubBFS(bfs,tempArray,x+n1+i,1,heightB); // Virker for n=15
+        //vebRecursiveSubBFS(bfs,tempArray,x*2+i,1,heightB); Virker for n=7
+        //vebRecursiveSubBFS(bfs,tempArray,x+n1+n2*i,1,heightB);
+        //buildPointerVEBRecursive(tempArray,veb,helper,1,n2,start+n1+i*n2,depth+cut,bfspos+n1+i*n2,n);
+        //buildPointerVEBRecursive(tempArray,veb,helper,1,n2,start+n1+i*n2,depth+cut,pow(2,depth+cut-1)+i,n);
+        buildPointerVEBRecursive(tempArray,veb,helper,1,n2,start+n1+i*n2,depth+cut,pow(2,depth+cut-1)+i+((bfspos-pow(2,depth-1))*2),n);
+        delete(tempArray);
+    }
 
 }
 
@@ -340,27 +427,27 @@ void testObjectPointerImplicit(int* array, int r, int power) {
     }
 }
 
-int pos(int d, int i, int* array) {
 
-    // i = BSF position, and d = depth
-    // Pos[d] = Pos[D[d]] + T[d] + (i AND T[d]) * B[d]
-    // array har form B[d] T[d] D[d] dvs. size af B, size af T og Ts dybde.
+/*void buildPointerVEB (int* toBuild, int* veb, int* helper, int n) {
 
-    if(d == 1) {
-        return 1;
+    for(int i = 1; i <= n; i++) {
+        int value = veb[i];
+        int parent;
+        if(i == 1) {
+            parent = 0;
+        }
+        else {
+            parent =
+        }
+
+        toBuild[i*4-3] = value;
+        toBuild[i*4-2] = parent;
+        toBuild[i*4-1] = left;
+        toBuild[i*4] = right;
     }
 
-    // Pos[D[d]
-    int newI = i >> 1;
-    int posDd = pos(array[d*3],newI,array);
-    int iANDT = i & array[d*3-1];
-    int final = iANDT * array[d*3-2];
+}*/
 
-    int pos = posDd + array[d*3-1] + final;
-
-    return pos;
-
-}
 
 
 
@@ -466,6 +553,22 @@ int main(int argc, char* argv[]) {
     int test = pos(3,7,helper);
 
     cout << test << '\n';
+
+    test = pos(2,2,helper);
+
+    cout << test << '\n';
+
+    cout << "---VEB Pointer---\n";
+    int* pointer = new int[n*4+1];
+    buildPointerVEBRecursive(bfs,pointer,helper,1,n,1,1,1,n);
+
+    for(int i = 1; i <= n*4; i++) {
+        if((i % 4) == 1) {
+            cout << "---\n";
+        }
+        cout << pointer[i] << '\n';
+    }
+
 
     /*n = 8;
     int* dfsarray = new int[n+1];
