@@ -30,6 +30,50 @@ using namespace std;
 
 }*/
 
+void buildVEBhelper(int* array, int height, int totalHeight, int start, bool isTop) {
+
+    // Store: Size of bottom tree rooted at depth d B[d],
+    // Size of the corresponding top tree T[d]
+    // and depth of the corresponding top tree D[d]
+
+    if(height == 1 && isTop && start != 1) {
+        cout << "Aborted " << start << '\n';
+        return;
+    }
+
+    int heightT = height / 2;
+    int heightB = height / 2;
+    if(height % 2 == 1) {
+        heightB++;
+    }
+    int sizeB = pow(2,heightB)-1;
+    int sizeT = pow(2,heightT)-1;
+
+    int placement = (start+heightT)*3-2;
+
+    cout << height << "," << heightT+start << "," << sizeB << "," << sizeT << "," << start << "," << placement << "," << isTop << '\n';
+
+    array[(start+heightT)*3-2] = sizeB;
+    array[(start+heightT)*3-1] = sizeT;
+    array[(start+heightT)*3] = start;
+
+    if(heightT >= 1) {
+        cout << placement << " Top\n";
+        buildVEBhelper(array,heightT,totalHeight,start, true);
+    }
+    if(heightB > 1) {
+        cout << placement << " Bottom\n";
+        buildVEBhelper(array,heightB,totalHeight,start+heightT, false);
+    }
+
+
+    /*if(height > 2) {
+        buildVEBhelper(array,heightT,totalHeight,topHeight); // Top
+        buildVEBhelper(array,heightB,totalHeight,topHeight+heightT); // Bottom
+    }*/
+
+}
+
 void vebRecursiveSubBFS(int* bfs, int* ret, int x, int start, int h) {
 
     ret[start] = bfs[x];
@@ -296,6 +340,28 @@ void testObjectPointerImplicit(int* array, int r, int power) {
     }
 }
 
+int pos(int d, int i, int* array) {
+
+    // i = BSF position, and d = depth
+    // Pos[d] = Pos[D[d]] + T[d] + (i AND T[d]) * B[d]
+    // array har form B[d] T[d] D[d] dvs. size af B, size af T og Ts dybde.
+
+    if(d == 1) {
+        return 1;
+    }
+
+    // Pos[D[d]
+    int newI = i >> 1;
+    int posDd = pos(array[d*3],newI,array);
+    int iANDT = i & array[d*3-1];
+    int final = iANDT * array[d*3-2];
+
+    int pos = posDd + array[d*3-1] + final;
+
+    return pos;
+
+}
+
 
 
 int main(int argc, char* argv[]) {
@@ -372,6 +438,34 @@ int main(int argc, char* argv[]) {
         cout << veb[i] << '\n';
     }
 
+    cout << "---\n";
+
+    // Store: Size of bottom tree rooted at depth d B[d],
+    // Size of the corresponding top tree T[d]
+    // and depth of the corresponding top tree D[d]
+
+    // buildVEBhelper(int* array, int height, int totalHeight, int topHeight) {
+    int height = log2(n+1);
+    int* helper = new int[height*3+1];
+    buildVEBhelper(helper,height,height,1,false);
+
+    for(int i = 1; i <= height*3; i++) {
+        if((i % 3) == 1) {
+            cout << "---\n";
+        }
+        cout << helper[i] << '\n';
+    }
+
+    cout << "---Test---\n";
+
+    // i = BSF position, and d = depth
+    // Pos[d] = Pos[D[d]] + T[d] + (i AND T[d]) * B[d]
+
+
+    // Test 1: Fra i=3 til i=6 og i=7 (skal give res 3 og 6)
+    int test = pos(3,7,helper);
+
+    cout << test << '\n';
 
     /*n = 8;
     int* dfsarray = new int[n+1];
