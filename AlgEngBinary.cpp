@@ -196,7 +196,7 @@ void buildPointerVEBRecursive(int* bfs, int* veb, int* helper, int x, int y, int
     // Bottom trees
     // Byg midlertidige arrays og send ned
     cout << depth << "Bottom\n";
-    int newBFSpos = bfspos << cut2;
+    int newBFSpos = bfspos << cut;
     for(int i = 0; i < numberBottomTrees; i++) {
         int* tempArray = new int[n2+1];
         int heightB = log2(n2+1);
@@ -472,7 +472,7 @@ int main(int argc, char* argv[]) {
 
 
 
-    n = 31;
+    n = 15;
 
     // Sorted array
     int* array = new int[n+1];
