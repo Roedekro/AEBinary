@@ -36,12 +36,55 @@ int posQuery(int d, int i, int* helper, int* record) {
     // Pos[d] = Pos[D[d]] + T[d] + (i AND T[d]) * B[d]
     // array har form B[d] T[d] D[d] dvs. size af B, size af T og Ts dybde.
 
-    int posDd = record[d*3];
+    int posDd = record[helper[d*3]];
     int iANDT = i & helper[d*3-1];
     int final = iANDT * helper[d*3-2];
     int pos = posDd + helper[d*3-1] + final;
 
     return pos;
+
+}
+
+int vebImplicitQuery(int* veb, int* helper, int* record, int q, int n) {
+
+    int i = 1;
+    int d = 1;
+    int pointer = 1;
+    int val = veb[1];
+    int pred = 2000000000;
+
+    record[1] = 1;
+
+    while(val != q && pointer) {
+
+        val = veb[pointer];
+        if(q < val) {
+            i = i*2;
+            if(i > n) {
+                break;
+            }
+            d++;
+            pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
+            record[d] = pointer;
+        }
+        else {
+            i = i*2+1;
+            if(i > n) {
+                break;
+            }
+            pred = val;
+            d++;
+            pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
+            record[d] = pointer;
+        }
+    }
+
+    if(q == val) {
+        return val;
+    }
+    else {
+        return pred;
+    }
 
 }
 
@@ -694,9 +737,13 @@ int main(int argc, char* argv[]) {
         cout << pointer[i] << '\n';
     }
 
+    int* record = new int[height+1];
+
     cout << "---Query---\n";
     cout << vebPointerQueryV2(pointer,3) << '\n';
     cout << vebPointerQueryV2(pointer,n+1) << '\n';
+    cout << vebImplicitQuery(veb,helper,record,3,n) << '\n';
+    cout << vebImplicitQuery(veb,helper,record,n+1,n) << '\n';
     /*n = 8;
     int* dfsarray = new int[n+1];
     int* dfsPointerArray = new int[n*4+1];
