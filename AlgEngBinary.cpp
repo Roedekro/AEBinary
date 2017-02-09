@@ -45,7 +45,7 @@ int posQuery(int d, int i, int* helper, int* record) {
 
 }
 
-int vebPointerQuery(int* veb, int q) {
+int vebPointerQueryV1(int* veb, int q) {
 
     int pointer = 1;
     int val = veb[1];
