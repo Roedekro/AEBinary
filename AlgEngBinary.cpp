@@ -45,6 +45,32 @@ int posQuery(int d, int i, int* helper, int* record) {
 
 }
 
+int vebPointerQueryV2(int* veb, int q) {
+
+    int pointer = 1;
+    int val = veb[1];
+    int pred = 2000000000;
+
+    while(val != q && pointer) {
+
+        val = veb[pointer];
+        if(q < val) {
+            pointer = veb[pointer+2];
+        }
+        else {
+            pred = val;
+            pointer = veb[pointer+3];
+        }
+    }
+
+    if(q == val) {
+        return val;
+    }
+    else {
+        return pred;
+    }
+}
+
 int vebPointerQueryV1(int* veb, int q) {
 
     int pointer = 1;
@@ -668,7 +694,9 @@ int main(int argc, char* argv[]) {
         cout << pointer[i] << '\n';
     }
 
-
+    cout << "---Query---\n";
+    cout << vebPointerQueryV2(pointer,3) << '\n';
+    cout << vebPointerQueryV2(pointer,n+1) << '\n';
     /*n = 8;
     int* dfsarray = new int[n+1];
     int* dfsPointerArray = new int[n*4+1];
