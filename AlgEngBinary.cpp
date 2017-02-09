@@ -30,6 +30,103 @@ using namespace std;
 
 }*/
 
+int posQuery(int d, int i, int* helper, int* record) {
+
+    // i = BSF position, and d = depth
+    // Pos[d] = Pos[D[d]] + T[d] + (i AND T[d]) * B[d]
+    // array har form B[d] T[d] D[d] dvs. size af B, size af T og Ts dybde.
+
+    int posDd = record[d*3];
+    int iANDT = i & helper[d*3-1];
+    int final = iANDT * helper[d*3-2];
+    int pos = posDd + helper[d*3-1] + final;
+
+    return pos;
+
+}
+
+int vebPointerQuery(int* veb, int q) {
+
+    int pointer = 1;
+    int val = veb[1];
+    int temp = 0; // Brug for temp til ikke at overskrive pointer
+    bool run = true;
+
+    // Prøv at find q
+    while(val != q && run) {
+
+        if(q < val) {
+            temp = veb[pointer+2];
+            if(temp == 0) {
+                run = false;
+            }
+            else {
+                pointer = temp;
+            }
+        }
+        else {
+            temp = veb[pointer+3];
+            if(temp == 0) {
+                run = false;
+            }
+            else {
+                pointer = temp;
+            }
+        }
+        val = veb[pointer];
+    }
+
+    // Fand vi q?
+    if(val == q) {
+        return val;
+    }
+
+    // Søg efter predecessor
+    int prev = 0;
+    pointer = veb[pointer+1];
+    val = veb[pointer];
+    run = true;
+
+    while(val > q && run) {
+        prev = pointer;
+        temp = veb[pointer+1];
+        if(temp == 0) {
+            run = false;
+        }
+        else {
+            pointer = temp;
+        }
+        val = veb[pointer];
+    }
+
+    // Vi har nu fundet en ancestor der er mindre and q
+    // Men hvis ancestor har et venstre barn og vi kom fra højre
+    // Så er predecessor det største element i træet med rod
+    // i venstre barn af ancestor
+
+    // Check om vi kom fra højre
+    if(prev == veb[pointer+3]) {
+        return val;
+    }
+
+    // Søg i venstre barns træ efter det største element
+    // Dvs. gå til højre så længe vi kan
+    pointer = veb[pointer+2];
+    run = true;
+    while(run) {
+        temp = veb[pointer+3];
+        if(temp == 0) {
+            run = false;
+        }
+        else {
+            pointer = temp;
+        }
+    }
+
+    return veb[pointer];
+
+}
+
 int pos(int d, int i, int* array) {
 
     // i = BSF position, and d = depth
