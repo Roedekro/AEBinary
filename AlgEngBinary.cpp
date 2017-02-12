@@ -493,7 +493,7 @@ void buildVEBBasedOnBFS(int* bfs, int* veb, int x, int y, int start) {
         //vebRecursiveSubBFS(bfs,tempArray,x*2+i,1,heightB); Virker for n=7
         //vebRecursiveSubBFS(bfs,tempArray,x+n1+n2*i,1,heightB);
         buildVEBBasedOnBFS(tempArray,veb,1,n2,start+n1+i*n2);
-        delete(tempArray);
+        delete[](tempArray);
     }
 
 
@@ -566,7 +566,7 @@ void buildPointerVEBRecursive(int* bfs, int* veb, int* helper, int x, int y, int
         //buildPointerVEBRecursive(tempArray,veb,helper,1,n2,start+n1+i*n2,depth+cut,pow(2,depth+cut-1)+i,n);
         //buildPointerVEBRecursive(tempArray,veb,helper,1,n2,start+n1+i*n2,depth+cut,pow(2,depth+cut-1)+i+((bfspos-pow(2,depth-1))*2),n);
         buildPointerVEBRecursive(tempArray,veb,helper,1,n2,start+n1+i*n2,depth+cut,newBFSpos+i,n);
-        delete(tempArray);
+        delete[](tempArray);
     }
 
 }
@@ -908,12 +908,12 @@ void pointerTest(int r, int power, int gap) {
         millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
         timeVEB[j-10] = millis;
 
-        delete(array);
-        delete(implicitBFS);
-        delete(pointerBFS);
-        delete(pointerDFS);
-        delete(pointerVEB);
-        delete(helper);
+        delete[](array);
+        delete[](implicitBFS);
+        delete[](pointerBFS);
+        delete[](pointerDFS);
+        delete[](pointerVEB);
+        delete[](helper);
         root->terminateMe();
 
         cout << "Run pow=" << j << " completed\n";
@@ -932,7 +932,7 @@ int main(int argc, char* argv[]) {
         cout << "Syntax is  <test> <runs> <power> <gap>\n";
         //n = 4;
         r = 1000000;
-        power = 24;
+        power = 25;
         n = pow(2,power)-1;
         test = 1;
         gap = 1;
@@ -951,7 +951,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-    /*n = 15;
+    /*n = 7;
 
     // Sorted array
     int* array = new int[n+1];
@@ -959,6 +959,12 @@ int main(int argc, char* argv[]) {
         array[i] = i;
     }
 
+    BinaryNode* fakeNode = NULL;
+    BinaryNode* root = new BinaryNode(array,1,n,fakeNode);
+    root->printMe();
+    root->terminateMe();*/
+
+    /*
     int* implicitBFS = new int[n+1];
     int* pointerBFS = new int[n*4+1];
     buildBFSArray(implicitBFS,array,1,n,1);
