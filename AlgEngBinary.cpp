@@ -920,8 +920,7 @@ void pointerTest(int r, int power, int gap) {
     }
 
     for(int i = 0; i < power-9; i++) {
-        int j = i+10;
-        cout << i << '\t' << timeObject[i] << '\t' << timeDFS[i] << '\t' << timeBFS[i] << '\t' << timeVEB[i] << '\n';
+        cout << i+10 << '\t' << timeObject[i] << '\t' << timeDFS[i] << '\t' << timeBFS[i] << '\t' << timeVEB[i] << '\n';
     }
 }
 
