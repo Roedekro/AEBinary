@@ -26,7 +26,7 @@ BinaryNode::BinaryNode(int* array, int x, int y, BinaryNode* p) {
     left = NULL;
     right = NULL;
 
-    cout << value << "," << middle << "," << x << "," << y << '\n';
+    //cout << value << "," << middle << "," << x << "," << y << '\n';
 
     if(x < middle) {
         left = new BinaryNode(array,x,middle-1,this);
@@ -50,7 +50,7 @@ void BinaryNode::terminateMe() {
         right->terminateMe();
     }
 
-    cout << "Deleting " << value << '\n';
+    //cout << "Deleting " << value << '\n';
     delete(this);
 }
 
