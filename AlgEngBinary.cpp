@@ -38,28 +38,47 @@ int inorderImplictQuery(int* array, int n, int range, int r) {
 
     int total = 0;
     for(int j = 0; j < r; j++) {
+
+
+
         int i = n/2+1; // Antag længden altid er ulige
         int x = 1;
         int y = n;
         int val = array[i];
         int q = (rand() % range) + 1;
 
-        while(val != q && x != y) {
+        //cout << "---Run " << j << " " << q << '\n';
 
-            i = (y+x)/2 + 1; // Antag at længden altid er ulige
-            val = array[i];
+        while(val != q) {
+
+            if(y-x == 1) {
+                if(val == q) break;
+                else {
+                    i++;
+                    break;
+                }
+            }
+
+            //cout << i << "," << x << "," << y << "," << val << '\n';
             if(q < val) {
                 y = i;
+                i = (y+x)/2;
+                val = array[i];
             }
             else {
                 x = i;
+                i = (y+x)/2;
+                val = array[i];
             }
         }
-        if(q == array[x]) {
+
+        //cout << "Found " << array[i] << '\n';
+
+        if(q == array[i]) {
             total = total+q;
         }
         else {
-            total = total+array[x-1];
+            total = total+array[i-1];
         }
     }
     return total;
@@ -1099,9 +1118,9 @@ int main(int argc, char* argv[]) {
         cout << "Syntax is  <test> <runs> <power> <gap>\n";
         //n = 4;
         r = 1000000;
-        power = 15;
+        power = 11;
         n = pow(2,power)-1;
-        test = 1;
+        test = 2;
         gap = 1;
     }
     else {
@@ -1121,7 +1140,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-    /*n = 7;
+    /*n = 15;
 
     // Sorted array
     int* array = new int[n+1];
@@ -1129,7 +1148,10 @@ int main(int argc, char* argv[]) {
         array[i] = i;
     }
 
-    BinaryNode* fakeNode = NULL;
+    inorderImplictQuery(array,n,n,10);
+    */
+
+    /*BinaryNode* fakeNode = NULL;
     BinaryNode* root = new BinaryNode(array,1,n,fakeNode);
     root->printMe();
     root->terminateMe();*/
