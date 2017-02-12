@@ -34,8 +34,42 @@ using namespace std;
 
 }*/
 
-void objectPointerQuery(BinaryNode* root, int range, int r) {
+int inorderImplictQuery(int* array, int n, int range, int r) {
 
+    int total = 0;
+    for(int j = 0; j < r; j++) {
+        int i = n/2+1; // Antag længden altid er ulige
+        int x = 1;
+        int y = n;
+        int val = array[i];
+        int q = (rand() % range) + 1;
+
+        while(val != q && x != y) {
+
+            i = (y+x)/2 + 1; // Antag at længden altid er ulige
+            val = array[i];
+            if(q < val) {
+                y = i;
+            }
+            else {
+                x = i;
+            }
+        }
+        if(q == array[x]) {
+            total = total+q;
+        }
+        else {
+            total = total+array[x-1];
+        }
+    }
+    return total;
+}
+
+
+
+int objectPointerQuery(BinaryNode* root, int range, int r) {
+
+    int total = 0;
     for(int j = 0; j < r; j++) {
 
         int q = (rand() % range) + 1;
@@ -52,18 +86,26 @@ void objectPointerQuery(BinaryNode* root, int range, int r) {
             }
 
         }
-    }
+        if(root && root->value == q) {
+            total = total+q;
+        }
+        else if(pred){
+            total = total + pred->value;
+        }
 
+    }
+    return total;
 }
 
-void dfsImplicitQuery(int* bfs, int n, int range, int r) {
+int dfsImplicitQuery(int* dfs, int n, int range, int r) {
 
+    int total = 0;
     for(int j = 0; j < r; j++) {
 
         int q = (rand() % range) + 1;
 
         int pointer = 1;
-        int val = bfs[1];
+        int val = dfs[1];
         int pred = 0;
         int depth = 1; // Start depth of its subtrees
         int maxDepth = log2(n+1);
@@ -75,18 +117,24 @@ void dfsImplicitQuery(int* bfs, int n, int range, int r) {
             if(depth > maxDepth) {
                 break;
             }
-            val = bfs[pointer];
+            val = dfs[pointer];
             if(val < q) {
                 pointer = pointer+1;
             }
             else {
                 int d = maxDepth-depth;
                 int p = pow(2,d); // 1 for meget
-                pointer = bfs[pointer+p]; // sparer +1 her
+                pointer = dfs[pointer+p]; // sparer +1 her
             }
 
         }
 
+        if(q == val) {
+            total = total+q;
+        }
+        else {
+            total = total+pred;
+        }
         //return comparisons;
         /*if(q == val) {
             return val;
@@ -95,10 +143,12 @@ void dfsImplicitQuery(int* bfs, int n, int range, int r) {
             return pred;
         }*/
     }
+    return total;
 }
 
-void dfsPointerQuery(int* dfs, int n, int range, int r) {
+int dfsPointerQuery(int* dfs, int n, int range, int r) {
 
+    int total = 0;
     for(int j = 0; j < r; j++) {
 
         int q = (rand() % range) + 1;
@@ -119,6 +169,13 @@ void dfsPointerQuery(int* dfs, int n, int range, int r) {
             }
         }
 
+        if(q == val) {
+            total = total+q;
+        }
+        else {
+            total = total+pred;
+        }
+
         /*if(q == val) {
             return val;
         }
@@ -127,10 +184,12 @@ void dfsPointerQuery(int* dfs, int n, int range, int r) {
         }*/
 
     }
+    return total;
 }
 
-void bfsImplicitQuery(int* bfs, int n, int range, int r) {
+int bfsImplicitQuery(int* bfs, int n, int range, int r) {
 
+    int total = 0;
     for(int j = 0; j < r; j++) {
 
         int q = (rand() % range) + 1;
@@ -155,6 +214,12 @@ void bfsImplicitQuery(int* bfs, int n, int range, int r) {
             }
         }
 
+        if(q == val) {
+            total = total+q;
+        }
+        else {
+            total = total+pred;
+        }
         /*if(q == val) {
             return val;
         }
@@ -162,10 +227,12 @@ void bfsImplicitQuery(int* bfs, int n, int range, int r) {
             return pred;
         }*/
     }
+    return total;
 }
 
-void bfsPointerQuery(int* bfs, int n, int range, int r) {
+int bfsPointerQuery(int* bfs, int n, int range, int r) {
 
+    int total = 0;
     for(int j = 0; j < r; j++) {
 
         int q = (rand() % range) + 1;
@@ -184,6 +251,12 @@ void bfsPointerQuery(int* bfs, int n, int range, int r) {
             }
         }
 
+        if(q == val) {
+            total = total+q;
+        }
+        else {
+            total = total+pred;
+        }
         /*if(q == val) {
             return val;
         }
@@ -191,6 +264,7 @@ void bfsPointerQuery(int* bfs, int n, int range, int r) {
             return pred;
         }*/
     }
+    return total;
 }
 
 int posQuery(int d, int i, int* helper, int* record) {
@@ -208,8 +282,9 @@ int posQuery(int d, int i, int* helper, int* record) {
 
 }
 
-void vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r) {
+int vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r) {
 
+    int total = 0;
     for(int j = 0; j < r; j++) {
 
         int q = (rand() % range) + 1;
@@ -246,6 +321,13 @@ void vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int 
             }
         }
 
+        if(q == val) {
+            total = total+q;
+        }
+        else {
+            total = total+pred;
+        }
+
         /*if(q == val) {
             return val;
         }
@@ -253,10 +335,12 @@ void vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int 
             return pred;
         }*/
     }
+    return total;
 }
 
-void vebPointerQuery(int* veb, int range, int r) {
+int vebPointerQuery(int* veb, int range, int r) {
 
+    int total = 0;
     for(int j = 0; j < r; j++) {
 
         int q = (rand() % range) + 1;
@@ -276,6 +360,13 @@ void vebPointerQuery(int* veb, int range, int r) {
             }
         }
 
+        if(q == val) {
+            total = total+q;
+        }
+        else {
+            total = total+pred;
+        }
+
         /*if(q == val) {
             return val;
         }
@@ -283,9 +374,7 @@ void vebPointerQuery(int* veb, int range, int r) {
             return pred;
         }*/
     }
-
-
-
+    return total;
 }
 
 int vebPointerQueryStupidVersion(int* veb, int q) {
@@ -908,12 +997,12 @@ void pointerTest(int r, int power, int gap) {
         millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
         timeVEB[j-10] = millis;
 
-        delete[](array);
-        delete[](implicitBFS);
-        delete[](pointerBFS);
-        delete[](pointerDFS);
-        delete[](pointerVEB);
-        delete[](helper);
+        delete[] array;
+        delete[] implicitBFS;
+        delete[] pointerBFS;
+        delete[] pointerDFS;
+        delete[] pointerVEB;
+        delete[] helper;
         root->terminateMe();
 
         cout << "Run pow=" << j << " completed\n";
@@ -924,15 +1013,93 @@ void pointerTest(int r, int power, int gap) {
     }
 }
 
+void implicitTest(int r, int power, int gap) {
+
+
+    long* timeInOrder = new long[power-9];
+    long* timeDFS = new long[power-9];
+    long* timeBFS = new long[power-9];
+    long* timeVEB = new long[power-9];
+
+    for(int j = 10; j <= power; j++) {
+
+        int n = pow(2,j)-1;
+
+        // Array
+        int* array = new int[n+1];
+        for(int i = 1; i <= n; i++) {
+            array[i] = rand() % (n*gap);
+        }
+
+        // Sort
+        std::sort(array+1,array+n+1);
+
+        int height = log2(n+1);
+
+        int* implicitBFS = new int[n+1];
+        int* implicitDFS = new int[n*4+1];
+        int* implicitVEB = new int[n*4+1];
+        int* helper = new int[height*3+1];
+        int* record = new int[height+1];
+
+        buildBFSArray(implicitBFS,array,1,n,1);
+        buildDFSArrayPointer(implicitDFS,array,1,n,1,0);
+        buildVEBhelper(helper,height,height,1,false);
+        buildVEBBasedOnBFS(implicitBFS,implicitVEB,1,n,1);
+
+        typedef std::chrono::high_resolution_clock Clock;
+        auto start = Clock::now();
+        inorderImplictQuery(array,n,n*gap,r);
+        auto stop = Clock::now();
+        auto total = stop-start;
+        long millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        timeInOrder[j-10] = millis;
+
+        start = Clock::now();
+        dfsImplicitQuery(implicitDFS,n,n*gap,r);
+        stop = Clock::now();
+        total = stop-start;
+        millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        timeDFS[j-10] = millis;
+
+        start = Clock::now();
+        bfsImplicitQuery(implicitBFS,n,n*gap,r);
+        stop = Clock::now();
+        total = stop-start;
+        millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        timeBFS[j-10] = millis;
+
+        start = Clock::now();
+        vebImplicitQuery(implicitVEB,helper,record,n,n*gap,r);
+        stop = Clock::now();
+        total = stop-start;
+        millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        timeVEB[j-10] = millis;
+
+        delete[] array;
+        delete[] implicitBFS;
+        delete[] implicitDFS;
+        delete[] implicitVEB;
+        delete[] helper;
+        delete[] record;
+
+        cout << "Run pow=" << j << " completed\n";
+    }
+
+    for(int i = 0; i < power-9; i++) {
+        cout << i+10 << '\t' << timeInOrder[i] << '\t' << timeDFS[i] << '\t' << timeBFS[i] << '\t' << timeVEB[i] << '\n';
+    }
+}
+
 
 int main(int argc, char* argv[]) {
 
     int n,r,power,test,gap;
-    if(argc != 3) {
+    if(argc != 5) {
         cout << "Syntax is  <test> <runs> <power> <gap>\n";
         //n = 4;
         r = 1000000;
-        power = 25;
+        power = 15;
         n = pow(2,power)-1;
         test = 1;
         gap = 1;
@@ -948,6 +1115,9 @@ int main(int argc, char* argv[]) {
 
     if(test == 1) {
         pointerTest(r,power,gap);
+    }
+    else if(test == 2) {
+        implicitTest(r,power,gap);
     }
 
 
