@@ -34,6 +34,166 @@ using namespace std;
 
 }*/
 
+void buildSkewedDFSright(int* dfs, int* array, int x, int y, int start, int parent, float skew) {
+
+    int length = (y-x)+1;
+    /*if((y-x) % 2 == 1) {
+        length++;
+    }*/
+    float split = length * skew + x;
+    int pointer = (int) split;
+    int toLeft = pointer-x;
+    int toRight = y-pointer;
+    // Balancer, altid mindst en til venstre, men prøv også
+    // altid en til højre.
+    if(length > 1) {
+        if(toLeft < 1 && toRight > 1) {
+            pointer++;
+            toLeft++;
+            toRight--;
+
+        }
+        if(toRight < 1) {
+            pointer--;
+            toLeft--;
+            toRight++;
+        }
+    }
+    else {
+        toLeft = 0;
+        toRight = 0;
+    }
+
+
+
+    dfs[start] = array[pointer];	// Value
+    dfs[start+1] = parent;
+    if(toLeft > 0) {
+        dfs[start+2] = start+toRight*4+4;
+    }
+    else {
+        dfs[start+2] = 0;
+    }
+    if(toRight > 0) {
+        dfs[start+3] = start+4;
+    }
+    else {
+        dfs[start+3] = 0;
+    }
+
+    cout << split << ", " << pointer << ", " << x << ", " << y << ", " << length << ", " << toLeft << ", " << toRight << ", " << dfs[start]
+         << ", " << dfs[start+1] << ", " << dfs[start+2] << ", " << dfs[start+3] << ", " << start << '\n';
+
+    if(toLeft > 0) {
+        buildSkewedDFSright(dfs,array,x,pointer-1,start+toRight*4+4,start,skew);
+    }
+    if(toRight > 0) {
+        buildSkewedDFSright(dfs,array,pointer+1,y,start+4,start,skew);
+    }
+}
+
+void buildSkewedDFSleft(int* dfs, int* array, int x, int y, int start, int parent, float skew) {
+
+    int length = (y-x)+1;
+    /*if((y-x) % 2 == 1) {
+        length++;
+    }*/
+    float split = length * skew + x;
+    int pointer = (int) split;
+    int toLeft = pointer-x;
+    int toRight = y-pointer;
+    // Balancer, altid mindst en til venstre, men prøv også
+    // altid en til højre.
+    if(length > 1) {
+        if(toRight < 1 && toLeft > 1) {
+            pointer--;
+            toLeft--;
+            toRight++;
+
+        }
+        if(toLeft < 1) {
+            pointer++;
+            toLeft++;
+            toRight--;
+        }
+    }
+    else {
+        toLeft = 0;
+        toRight = 0;
+    }
+
+
+
+    dfs[start] = array[pointer];	// Value
+    dfs[start+1] = parent;
+    if(toLeft > 0) {
+        dfs[start+2] = start+4;
+    }
+    else {
+        dfs[start+2] = 0;
+    }
+    if(toRight > 0) {
+        dfs[start+3] = start+toLeft*4+4;
+    }
+    else {
+        dfs[start+3] = 0;
+    }
+
+    cout << split << ", " << pointer << ", " << x << ", " << y << ", " << length << ", " << toLeft << ", " << toRight << ", " << dfs[start]
+            << ", " << dfs[start+1] << ", " << dfs[start+2] << ", " << dfs[start+3] << ", " << start << '\n';
+
+    if(toLeft > 0) {
+        buildSkewedDFSleft(dfs,array,x,pointer-1,start+4,start,skew);
+    }
+    if(toRight > 0) {
+        buildSkewedDFSleft(dfs,array,pointer+1,y,start+toLeft*4+4,start,skew);
+    }
+
+}
+
+/*void buildSkewedBFS(int* bfs, int* array, int x, int y, int start, int parent, float skew) {
+
+    // Virker ikke, kan ikke lave dettes som BFS, men skal laves som noget
+    // der LIGNER BFS, se paper.
+
+
+    //cout << x << "," << y << "," << start << '\n';
+
+    int length = (y-x)/2;
+    if((y-x) % 2 == 1) {
+        length++;
+    }
+    float split = length * skew + x;
+    int pointer = (int) split;
+    int toLeft = pointer-x;
+    int toRight = y-pointer;
+    // Balancer, altid mindst en til venstre, men prøv også
+    // altid en til højre.
+    if(toRight < 1 && toLeft > 1) {
+        pointer--;
+        toLeft--;
+        toRight++;
+
+    }
+    if(toLeft < 1) {
+        pointer++;
+        toLeft++;
+        toRight--;
+    }
+
+    bfs[start*4-3] = array[pointer];	// Value
+    bfs[start*4-2] = parent;
+
+
+    //cout << "Placed " << array[middle] << " at " << start << " with middle=" << middle << '\n';
+
+    if(y > x) {
+        buildBFSArray(iarray, array, x, middle-1, 2*start);
+        if(y > x+1) buildBFSArray(iarray, array, middle+1, y, 2*start+1);
+    }
+
+}*/
+
 int inorderImplictQuery(int* array, int n, int range, int r) {
 
     int total = 0;
@@ -1132,15 +1292,15 @@ int main(int argc, char* argv[]) {
     }
 
 
-    if(test == 1) {
+    /*if(test == 1) {
         pointerTest(r,power,gap);
     }
     else if(test == 2) {
         implicitTest(r,power,gap);
-    }
+    }*/
 
 
-    /*n = 15;
+    n = 15;
 
     // Sorted array
     int* array = new int[n+1];
@@ -1148,6 +1308,21 @@ int main(int argc, char* argv[]) {
         array[i] = i;
     }
 
+    int* dfsl = new int[n*4+1];
+    //buildSkewedDFSleft(dfsl,array,1,n,1,0,0.7f);
+    buildSkewedDFSright(dfsl,array,1,n,1,0,0.7f);
+
+
+    cout << "Printing pointer\n";
+    for(int i = 0; i <= n*4; i++) {
+        if((i % 4) == 1) {
+            cout << "---\n";
+        }
+        cout << i << " = " << dfsl[i] << '\n';
+    }
+
+
+    /*
     inorderImplictQuery(array,n,n,10);
     */
 
