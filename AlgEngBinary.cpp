@@ -44,8 +44,8 @@ void buildSkewedDFSright(int* dfs, int* array, int x, int y, int start, int pare
     int pointer = (int) split;
     int toLeft = pointer-x;
     int toRight = y-pointer;
-    // Balancer, altid mindst en til venstre, men prøv også
-    // altid en til højre.
+    // Balancer, altid mindst en til højre, men prøv også
+    // altid en til venstre, hvis muligt.
     if(length > 1) {
         if(toLeft < 1 && toRight > 1) {
             pointer++;
@@ -81,8 +81,8 @@ void buildSkewedDFSright(int* dfs, int* array, int x, int y, int start, int pare
         dfs[start+3] = 0;
     }
 
-    cout << split << ", " << pointer << ", " << x << ", " << y << ", " << length << ", " << toLeft << ", " << toRight << ", " << dfs[start]
-         << ", " << dfs[start+1] << ", " << dfs[start+2] << ", " << dfs[start+3] << ", " << start << '\n';
+    /*cout << split << ", " << pointer << ", " << x << ", " << y << ", " << length << ", " << toLeft << ", " << toRight << ", " << dfs[start]
+         << ", " << dfs[start+1] << ", " << dfs[start+2] << ", " << dfs[start+3] << ", " << start << '\n';*/
 
     if(toLeft > 0) {
         buildSkewedDFSright(dfs,array,x,pointer-1,start+toRight*4+4,start,skew);
@@ -139,8 +139,8 @@ void buildSkewedDFSleft(int* dfs, int* array, int x, int y, int start, int paren
         dfs[start+3] = 0;
     }
 
-    cout << split << ", " << pointer << ", " << x << ", " << y << ", " << length << ", " << toLeft << ", " << toRight << ", " << dfs[start]
-            << ", " << dfs[start+1] << ", " << dfs[start+2] << ", " << dfs[start+3] << ", " << start << '\n';
+    /*cout << split << ", " << pointer << ", " << x << ", " << y << ", " << length << ", " << toLeft << ", " << toRight << ", " << dfs[start]
+            << ", " << dfs[start+1] << ", " << dfs[start+2] << ", " << dfs[start+3] << ", " << start << '\n';*/
 
     if(toLeft > 0) {
         buildSkewedDFSleft(dfs,array,x,pointer-1,start+4,start,skew);
@@ -286,11 +286,12 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
         int pointer = 1;
         int val = dfs[1];
         int pred = 0;
-        int depth = 1; // Start depth of its subtrees
+        int depth = 0; // Start depth
         int maxDepth = log2(n+1);
 
 
-        while(val != q) {
+        while(val != q ) {
+
 
             depth++;
             if(depth > maxDepth) {
@@ -305,6 +306,7 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
                 int p = pow(2,d); // 1 for meget
                 pointer = dfs[pointer+p]; // sparer +1 her
             }
+            depth++;
 
         }
 
@@ -376,7 +378,7 @@ int bfsImplicitQuery(int* bfs, int n, int range, int r) {
         int val = bfs[1];
         int pred = 0;
         int depth = 0; // Current depth
-        int maxDepth = pow(2,n+1);
+        int maxDepth = log2(n+1);
 
         while (val != q) {
 
@@ -386,10 +388,10 @@ int bfsImplicitQuery(int* bfs, int n, int range, int r) {
             }
             val = bfs[pointer];
             if (val < q) {
-                pointer = bfs[pointer + 2];
+                pointer = pointer*2;
             } else {
                 pred = val;
-                pointer = bfs[pointer + 3];
+                pointer = pointer*2+1;
             }
         }
 
@@ -1147,7 +1149,8 @@ void pointerTest(int r, int power, int gap) {
         BinaryNode* root = new BinaryNode(array,1,n,fakeNode);
 
 
-        typedef std::chrono::high_resolution_clock Clock;
+        //typedef std::chrono::high_resolution_clock Clock;
+        typedef std::chrono::system_clock Clock;
         auto start = Clock::now();
         objectPointerQuery(root,n*gap,r);
         auto stop = Clock::now();
@@ -1194,6 +1197,9 @@ void pointerTest(int r, int power, int gap) {
 
 void implicitTest(int r, int power, int gap) {
 
+    SYSTEMTIME  system_time;
+
+    long tidStart, tidStop, totalTid;
 
     long* timeInOrder = new long[power-9];
     long* timeDFS = new long[power-9];
@@ -1226,13 +1232,22 @@ void implicitTest(int r, int power, int gap) {
         buildVEBhelper(helper,height,height,1,false);
         buildVEBBasedOnBFS(implicitBFS,implicitVEB,1,n,1);
 
-        typedef std::chrono::high_resolution_clock Clock;
+
+        GetSystemTime(&system_time);
+        tidStart = (long) (system_time.wHour*3600000) + (system_time.wMinute*60000) + (system_time.wSecond * 1000) + system_time.wMilliseconds;
+        //typedef std::chrono::high_resolution_clock Clock;
+        typedef std::chrono::system_clock Clock;
         auto start = Clock::now();
         inorderImplictQuery(array,n,n*gap,r);
         auto stop = Clock::now();
         auto total = stop-start;
         long millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
         timeInOrder[j-10] = millis;
+        GetSystemTime(&system_time);
+        tidStop = (long) (system_time.wHour*3600000) + (system_time.wMinute*60000) + (system_time.wSecond * 1000) + system_time.wMilliseconds;
+        totalTid = tidStop - tidStart;
+
+        cout << millis << '\t' << totalTid << '\n';
 
         start = Clock::now();
         dfsImplicitQuery(implicitDFS,n,n*gap,r);
@@ -1270,6 +1285,57 @@ void implicitTest(int r, int power, int gap) {
     }
 }
 
+void skewedTest(int n, int r, int gap) {
+
+    // Array
+    int* array = new int[n+1];
+    for(int i = 1; i <= n; i++) {
+        array[i] = rand() % (n*gap);
+    }
+
+    // Sort
+    std::sort(array+1,array+n+1);
+
+    float variance = 0.1F;
+
+    int* leftRes = new int[9];
+    int* rightRes = new int[9];
+
+    for(int i = 1; i < 10; i++) {
+
+        float alpha = i * variance;
+        int* dfsl = new int[n*4+1];
+        int* dfsr = new int[n*4+1];
+
+        buildSkewedDFSleft(dfsl,array,1,n,1,0,alpha);
+        buildSkewedDFSright(dfsr,array,1,n,1,0,alpha);
+
+        typedef std::chrono::system_clock Clock;
+        auto start = Clock::now();
+        dfsPointerQuery(dfsl,n,n*gap,r);
+        auto stop = Clock::now();
+        auto total = stop-start;
+        long millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        leftRes[i-1] = millis;
+
+        start = Clock::now();
+        dfsPointerQuery(dfsr,n,n*gap,r);
+        stop = Clock::now();
+        total = stop-start;
+        millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        rightRes[i-1] = millis;
+
+        delete[] dfsl;
+        delete[] dfsr;
+        cout << "Completed run " << i << '\n';
+    }
+
+    for(int i = 1; i < 10; i++) {
+        cout << i*variance << '\t' << leftRes[i-1] << '\t' << rightRes[i-1] << '\n';
+    }
+
+}
+
 
 int main(int argc, char* argv[]) {
 
@@ -1278,9 +1344,9 @@ int main(int argc, char* argv[]) {
         cout << "Syntax is  <test> <runs> <power> <gap>\n";
         //n = 4;
         r = 1000000;
-        power = 11;
+        power = 24;
         n = pow(2,power)-1;
-        test = 2;
+        test = 3;
         gap = 1;
     }
     else {
@@ -1292,15 +1358,18 @@ int main(int argc, char* argv[]) {
     }
 
 
-    /*if(test == 1) {
+    if(test == 1) {
         pointerTest(r,power,gap);
     }
     else if(test == 2) {
         implicitTest(r,power,gap);
-    }*/
+    }
+    else if(test == 3) {
+        skewedTest(n,r,gap);
+    }
 
 
-    n = 15;
+    /*n = 15;
 
     // Sorted array
     int* array = new int[n+1];
@@ -1319,7 +1388,7 @@ int main(int argc, char* argv[]) {
             cout << "---\n";
         }
         cout << i << " = " << dfsl[i] << '\n';
-    }
+    }*/
 
 
     /*
