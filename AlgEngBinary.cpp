@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include "BinaryNode.h"
 #include <time.h>
-#include <windows.h>
+//#include <windows.h>
 #include <cmath>
 #include <algorithm>
 #include <cstdio>
@@ -1197,9 +1197,9 @@ void pointerTest(int r, int power, int gap) {
 
 void implicitTest(int r, int power, int gap) {
 
-    SYSTEMTIME  system_time;
+    //SYSTEMTIME  system_time;
 
-    long tidStart, tidStop, totalTid;
+    //long tidStart, tidStop, totalTid;
 
     long* timeInOrder = new long[power-9];
     long* timeDFS = new long[power-9];
@@ -1233,8 +1233,8 @@ void implicitTest(int r, int power, int gap) {
         buildVEBBasedOnBFS(implicitBFS,implicitVEB,1,n,1);
 
 
-        GetSystemTime(&system_time);
-        tidStart = (long) (system_time.wHour*3600000) + (system_time.wMinute*60000) + (system_time.wSecond * 1000) + system_time.wMilliseconds;
+        //GetSystemTime(&system_time);
+        //tidStart = (long) (system_time.wHour*3600000) + (system_time.wMinute*60000) + (system_time.wSecond * 1000) + system_time.wMilliseconds;
         //typedef std::chrono::high_resolution_clock Clock;
         typedef std::chrono::system_clock Clock;
         auto start = Clock::now();
@@ -1243,9 +1243,9 @@ void implicitTest(int r, int power, int gap) {
         auto total = stop-start;
         long millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
         timeInOrder[j-10] = millis;
-        GetSystemTime(&system_time);
-        tidStop = (long) (system_time.wHour*3600000) + (system_time.wMinute*60000) + (system_time.wSecond * 1000) + system_time.wMilliseconds;
-        totalTid = tidStop - tidStart;
+        //GetSystemTime(&system_time);
+        //tidStop = (long) (system_time.wHour*3600000) + (system_time.wMinute*60000) + (system_time.wSecond * 1000) + system_time.wMilliseconds;
+        //totalTid = tidStop - tidStart;
 
         cout << millis << '\t' << totalTid << '\n';
 
@@ -1346,7 +1346,7 @@ int main(int argc, char* argv[]) {
         r = 1000000;
         power = 24;
         n = pow(2,power)-1;
-        test = 3;
+        test = 2;
         gap = 1;
     }
     else {
