@@ -616,9 +616,9 @@ int vebPointerQuery(int* veb, int range, int r) {
         /*if(val != q && !(pred < q)) {
             cout << "Error in VEB Pointer\n";
         }*/
-        if(val != q) {
+        /*if(val != q) {
             cout << "Error in VEB Pointer " << q << " " << val << " " << pred << " " << pointer << '\n';
-        }
+        }*/
 
         /*if(q == val) {
             return val;
