@@ -1312,7 +1312,9 @@ void implicitTest(int r, int power, int gap) {
         //typedef std::chrono::high_resolution_clock Clock;
         typedef std::chrono::system_clock Clock;
         auto start = Clock::now();
+
         inorderImplictQuery(array,n,n*gap,r);
+
         auto stop = Clock::now();
         auto total = stop-start;
         long millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
@@ -1323,26 +1325,44 @@ void implicitTest(int r, int power, int gap) {
 
         //cout << millis << '\t' << totalTid << '\n';
 
+        inorderImplictQuery(array,n,n*gap,r);
+
+
         start = Clock::now();
+
         dfsImplicitQuery(implicitDFS,n,n*gap,r);
+
         stop = Clock::now();
         total = stop-start;
         millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
         timeDFS[j-10] = millis;
 
+        dfsImplicitQuery(implicitDFS,n,n*gap,r);
+
+
         start = Clock::now();
+
         bfsImplicitQuery(implicitBFS,n,n*gap,r);
+
         stop = Clock::now();
         total = stop-start;
         millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
         timeBFS[j-10] = millis;
 
+        bfsImplicitQuery(implicitBFS,n,n*gap,r);
+
+
         start = Clock::now();
+
         vebImplicitQuery(implicitVEB,helper,record,n,n*gap,r);
+
         stop = Clock::now();
         total = stop-start;
         millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
         timeVEB[j-10] = millis;
+
+        vebImplicitQuery(implicitVEB,helper,record,n,n*gap,r);
+
 
         delete[] array;
         delete[] implicitBFS;
@@ -1386,18 +1406,28 @@ void skewedTest(int n, int r, int gap) {
 
         typedef std::chrono::system_clock Clock;
         auto start = Clock::now();
+
         dfsPointerQuery(dfsl,n,n*gap,r);
+
         auto stop = Clock::now();
         auto total = stop-start;
         long millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
         leftRes[i-1] = millis;
 
+        dfsPointerQuery(dfsl,n,n*gap,r);
+
+
         start = Clock::now();
+
         dfsPointerQuery(dfsr,n,n*gap,r);
+
         stop = Clock::now();
         total = stop-start;
         millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
         rightRes[i-1] = millis;
+
+        dfsPointerQuery(dfsr,n,n*gap,r);
+
 
         delete[] dfsl;
         delete[] dfsr;
