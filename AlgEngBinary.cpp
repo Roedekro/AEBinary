@@ -723,13 +723,15 @@ int pos(int d, int i, int* array) {
     }
 
     // Pos[D[d]
-    int newI = i >> 1;
+    //int newI = i >> 1;
+    int newI = i >> (d-array[d*3]);
     int posDd = pos(array[d*3],newI,array);
     int iANDT = i & array[d*3-1];
     int final = iANDT * array[d*3-2];
 
     int pos = posDd + array[d*3-1] + final;
 
+    //cout << d << " "<< i << " " <<  pos << '\n';
     return pos;
 
 }
@@ -855,15 +857,19 @@ void buildPointerVEBRecursive(int* bfs, int* veb, int* helper, int x, int y, int
             veb[start*4-2] = 0;
         }
         else {
+            //cout << "--- START PARENT " << bfs[x] << '\n';
             veb[start*4-2] = pos(depth-1,bfspos/2,helper)*4-3; // Parent
             //cout << "Parent " << bfs[x] << "," << veb[start*4-2] << "," << bfspos << "," << depth-1 << '\n';
+            //cout << "--- STOP PARENT\n";
         }
 
         if(bfspos*2 > n) {
             veb[start*4-1] = 0;
         }
         else {
+            //cout << "--- START LEFT " << bfs[x] << '\n';
             veb[start*4-1] = pos(depth+1,bfspos*2,helper)*4-3; // Left
+            //cout << "--- STOP LEFT\n";
         }
 
         //cout << "Trying to find " << bfspos*2 << " at depth="<< depth+1 << '\n';
@@ -872,9 +878,11 @@ void buildPointerVEBRecursive(int* bfs, int* veb, int* helper, int x, int y, int
             veb[start*4] = 0; // Right
         }
         else {
+            //cout << "--- START RIGHT " << bfs[x] << '\n';
             veb[start*4] = pos(depth+1,bfspos*2+1,helper)*4-3; // Right
+            //cout << "--- STOP RIGHT\n";
         }
-        cout << "Placed " << bfs[x] << " at " << start*4-3 << " - " << veb[start*4-2] << "," << veb[start*4-1] << "," << veb[start*4]  << "," <<  bfspos << "," << depth <<'\n';
+        //cout << "Placed " << bfs[x] << " at " << start*4-3 << " - " << veb[start*4-2] << "," << veb[start*4-1] << "," << veb[start*4]  << "," <<  bfspos << "," << depth <<'\n';
         return;
     }
     int height = log2(y-x+1+1); // Antag at n = 2^x - 1
@@ -1197,8 +1205,8 @@ void pointerTest(int r, int power, int gap) {
         // Array
         int* array = new int[n+1];
         for(int i = 1; i <= n; i++) {
-            //array[i] = (rand() % (n*gap))+1;
-            array[i] = i;
+            array[i] = (rand() % (n*gap))+1;
+            //array[i] = i;
         }
 
         // Sort
@@ -1474,7 +1482,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-    if(test == 1) {
+    /*if(test == 1) {
         pointerTest(r,power,gap);
     }
     else if(test == 2) {
@@ -1482,7 +1490,7 @@ int main(int argc, char* argv[]) {
     }
     else if(test == 3) {
         skewedTest(n,r,gap);
-    }
+    }*/
 
 
     /*n = 127;
