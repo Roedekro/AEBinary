@@ -212,29 +212,32 @@ int inorderImplictQuery(int* array, int n, int range, int r) {
 
         while(val != q) {
 
-            if(y-x == 1) {
+            /*if(y-x == 1) {
                 if(val == q) break;
                 else if(array[i+1] <= q) {
                     i++;
                 }
                 break;
+            }*/
+            if(y-x==0) {
+                break;
             }
 
             //cout << i << "," << x << "," << y << "," << val << '\n';
             if(q < val) {
-                y = i;
+                y = i-1;
                 i = (y+x)/2;
                 val = array[i];
             }
             else {
                 pred = val;
-                x = i;
+                x = i+1;
                 i = (y+x)/2;
                 val = array[i];
             }
         }
 
-        //cout << "Found " << array[i] << '\n';
+        //cout << "Found " << array[i] << " and " << pred << '\n';
 
         if(q == array[i]) {
             total = total+q;
@@ -244,6 +247,9 @@ int inorderImplictQuery(int* array, int n, int range, int r) {
         }
 
         /*if(array[i] != q && !(pred < q)) {
+            cout << "Error in Inorder Implicit " << q << " " << array[i] << " " << pred << '\n';
+        }*/
+        /*if(array[i] != q) {
             cout << "Error in Inorder Implicit " << q << " " << array[i] << " " << pred << '\n';
         }*/
     }
@@ -279,6 +285,7 @@ int objectPointerQuery(BinaryNode* root, int range, int r) {
             /*if(!(pred->value <= q)) {
                 cout << "Error in Object Pointer" << q << " " << pred->value << '\n';
             }*/
+            //cout << "Error in Object Pointer" << q << " " << pred->value << '\n';
         }
 
 
@@ -302,21 +309,22 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
 
         while(val != q ) {
 
-
             depth++;
             if(depth > maxDepth) {
                 break;
             }
+
             val = dfs[pointer];
+            //cout << q << " " << val << " " << pointer << '\n';
             if(q < val) {
                 pointer = pointer+1;
             }
             else {
+                pred = val;
                 int d = maxDepth-depth;
                 int p = pow(2,d); // 1 for meget
-                pointer = dfs[pointer+p]; // sparer +1 her
+                pointer = p+pointer; // sparer +1 her
             }
-            depth++;
 
         }
 
@@ -330,6 +338,10 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
         /*if(val != q && !(pred < q)) {
             cout << "Error in DFS Implicit\n";
         }*/
+        /*if(val != q) {
+            cout << "Error in DFS Implicit " << q << " " << val << " " << pred << " " << pointer << '\n';
+        }*/
+
         //return comparisons;
         /*if(q == val) {
             return val;
@@ -376,6 +388,9 @@ int dfsPointerQuery(int* dfs, int n, int range, int r) {
         }
 
         /*if(val != q && !(pred < q)) {
+            cout << "Error in DFS Pointer\n";
+        }*/
+        /*if(val != q) {
             cout << "Error in DFS Pointer\n";
         }*/
 
@@ -434,6 +449,9 @@ int bfsImplicitQuery(int* bfs, int n, int range, int r) {
         /*if(val != q && !(pred < q)) {
             cout << "Error in BFS Implicit\n";
         }*/
+        /*if(val != q) {
+            cout << "Error in BFS Implicit\n";
+        }*/
         /*if(q == val) {
             return val;
         }
@@ -473,6 +491,9 @@ int bfsPointerQuery(int* bfs, int n, int range, int r) {
         }
 
         /*if(val != q && !(pred < q)) {
+            cout << "Error in BFS Pointer\n";
+        }*/
+        /*if(val != q) {
             cout << "Error in BFS Pointer\n";
         }*/
         /*if(q == val) {
@@ -549,6 +570,9 @@ int vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r
         /*if(val != q && !(pred < q)) {
             cout << "Error in VEB Implicit " << q << " " << pred <<  '\n';
         }*/
+        /*if(val != q) {
+            cout << "Error in VEB Implicit " << q << " " << pred <<  '\n';
+        }*/
 
         /*if(q == val) {
             return val;
@@ -570,7 +594,7 @@ int vebPointerQuery(int* veb, int range, int r) {
         int val = veb[1];
         int pred = 0;
 
-        while(val != q && pointer) {
+        while(val != q && pointer > 0) {
 
             val = veb[pointer];
             if(q < val) {
@@ -592,6 +616,9 @@ int vebPointerQuery(int* veb, int range, int r) {
         /*if(val != q && !(pred < q)) {
             cout << "Error in VEB Pointer\n";
         }*/
+        if(val != q) {
+            cout << "Error in VEB Pointer " << q << " " << val << " " << pred << " " << pointer << '\n';
+        }
 
         /*if(q == val) {
             return val;
@@ -847,7 +874,7 @@ void buildPointerVEBRecursive(int* bfs, int* veb, int* helper, int x, int y, int
         else {
             veb[start*4] = pos(depth+1,bfspos*2+1,helper)*4-3; // Right
         }
-        //cout << "Placed " << bfs[x] << " at " << start*4-3 << " - " << veb[start*4-2] << "," << veb[start*4-1] << "," << veb[start*4]  << "," <<  bfspos <<'\n';
+        cout << "Placed " << bfs[x] << " at " << start*4-3 << " - " << veb[start*4-2] << "," << veb[start*4-1] << "," << veb[start*4]  << "," <<  bfspos << "," << depth <<'\n';
         return;
     }
     int height = log2(y-x+1+1); // Antag at n = 2^x - 1
@@ -1170,8 +1197,8 @@ void pointerTest(int r, int power, int gap) {
         // Array
         int* array = new int[n+1];
         for(int i = 1; i <= n; i++) {
-            array[i] = (rand() % (n*gap))+1;
-            //array[i] = i;
+            //array[i] = (rand() % (n*gap))+1;
+            array[i] = i;
         }
 
         // Sort
@@ -1260,6 +1287,7 @@ void implicitTest(int r, int power, int gap) {
         int* array = new int[n+1];
         for(int i = 1; i <= n; i++) {
             array[i] = (rand() % (n*gap) + 1);
+            //array[i] = i;
         }
 
         // Sort
@@ -1268,13 +1296,13 @@ void implicitTest(int r, int power, int gap) {
         int height = log2(n+1);
 
         int* implicitBFS = new int[n+1];
-        int* implicitDFS = new int[n*4+1];
-        int* implicitVEB = new int[n*4+1];
+        int* implicitDFS = new int[n+1];
+        int* implicitVEB = new int[n+1];
         int* helper = new int[height*3+1];
         int* record = new int[height+1];
 
         buildBFSArray(implicitBFS,array,1,n,1);
-        buildDFSArrayPointer(implicitDFS,array,1,n,1,0);
+        buildDFSArray(implicitDFS,array,1,n,1);
         buildVEBhelper(helper,height,height,1,false);
         buildVEBBasedOnBFS(implicitBFS,implicitVEB,1,n,1);
 
@@ -1427,13 +1455,55 @@ int main(int argc, char* argv[]) {
     }
 
 
-    /*n = 31;
+    /*n = 127;
 
     // Sorted array
     int* array = new int[n+1];
     for(int i = 1; i <= n; i++) {
         array[i] = i;
-    }*/
+    }
+
+    int* bfs = new int[n+1];
+    buildBFSArray(bfs,array,1,n,1);
+
+    for(int i = 1; i <= n; i++) {
+        cout << i << " = " << bfs[i] << '\n';
+    }
+
+    cout << "---VEB---\n";
+
+    int* vebImplicit = new int[n+1];
+    buildVEBBasedOnBFS(bfs,vebImplicit,1,n,1);
+    for(int i = 1; i <= n; i++) {
+        cout << i << " = " << vebImplicit[i] << '\n';
+    }
+
+    cout << "---Helper---\n";
+
+    int height = log2(n+1);
+    int* helper = new int[height*3+1];
+    buildVEBhelper(helper,height,height,1,false);
+
+    for(int i = 1; i <= height*3; i++) {
+        if((i % 3) == 1) {
+            cout << "---\n";
+        }
+        cout << helper[i] << '\n';
+    }
+
+    cout << "---Test---\n";
+
+    int* pointer = new int[n*4+1];
+    buildPointerVEBRecursive(bfs,pointer,helper,1,n,1,1,1,n);
+
+    for(int i = 1; i <= n*4; i++) {
+        if((i % 4) == 1) {
+            cout << "---\n";
+        }
+        cout << i << ": " << pointer[i] << '\n';
+    }
+
+    vebPointerQuery(pointer,n,n);
 
     /*int* dfsl = new int[n*4+1];
     //buildSkewedDFSleft(dfsl,array,1,n,1,0,0.7f);
@@ -1458,8 +1528,8 @@ int main(int argc, char* argv[]) {
     root->printMe();
     root->terminateMe();*/
 
-    /*
-    int* implicitBFS = new int[n+1];
+
+    /*int* implicitBFS = new int[n+1];
     int* pointerBFS = new int[n*4+1];
     buildBFSArray(implicitBFS,array,1,n,1);
     buildBFSPointerArray(pointerBFS,implicitBFS,n);
@@ -1512,8 +1582,13 @@ int main(int argc, char* argv[]) {
     buildBFSArray(bfs,array,1,n,1);
 
     for(int i = 1; i <= n; i++) {
-        cout << bfs[i] << '\n';
-    }
+        cout  << i << ": " << bfs[i] << '\n';
+    }*/
+
+
+
+
+    /*
 
     cout << "---\n";
 
@@ -1597,8 +1672,9 @@ int main(int argc, char* argv[]) {
         cout << i << ": " << dfsPointerArray[i] << '\n';
     }
 
-    dfsPointerQuery(dfsPointerArray,n,n,n);
-    */
+    dfsImplicitQuery(dfsarray,n,n,10);
+    //dfsPointerQuery(dfsPointerArray,n,n,n);
+
 
     //testObjectPointerImplicit(array,r,power);
 
