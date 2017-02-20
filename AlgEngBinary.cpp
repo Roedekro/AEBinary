@@ -305,7 +305,7 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
         int pred = 0;
         int depth = 0; // Start depth
         int maxDepth = log2(n+1);
-
+        //int p = n+1;
 
         while(val != q ) {
 
@@ -316,6 +316,7 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
 
             val = dfs[pointer];
             //cout << q << " " << val << " " << pointer << '\n';
+            //p = p >> 1;
             if(q < val) {
                 pointer = pointer+1;
             }
@@ -323,6 +324,7 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
                 pred = val;
                 int d = maxDepth-depth;
                 int p = pow(2,d); // 1 for meget
+                //int p = 2 << (d-1);
                 pointer = p+pointer; // sparer +1 her
             }
 
@@ -1482,7 +1484,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-    /*if(test == 1) {
+    if(test == 1) {
         pointerTest(r,power,gap);
     }
     else if(test == 2) {
@@ -1490,7 +1492,7 @@ int main(int argc, char* argv[]) {
     }
     else if(test == 3) {
         skewedTest(n,r,gap);
-    }*/
+    }
 
 
     /*n = 127;
