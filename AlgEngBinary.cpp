@@ -239,8 +239,8 @@ int inorderImplictQuery(int* array, int n, int range, int r) {
 
         //cout << "Found " << array[i] << " and " << pred << '\n';
 
-        if(q == array[i]) {
-            total = total+q;
+        if(array[i] <= q) {
+            total = total+array[i];
         }
         else {
             total = total+pred;
@@ -277,8 +277,8 @@ int objectPointerQuery(BinaryNode* root, int range, int r) {
             }
 
         }
-        if(node && node->value == q) {
-            total = total+q;
+        if(node && node->value <= q) {
+            total = total+node->value;
         }
         else if(pred){
             total = total + pred->value;
@@ -330,7 +330,7 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
 
         }
 
-        if(q == val) {
+        if(val <= q) {
             total = total+val;
         }
         else {
@@ -382,8 +382,8 @@ int dfsPointerQuery(int* dfs, int n, int range, int r) {
             }
         }
 
-        if(q == val) {
-            total = total+q;
+        if(val <= q) {
+            total = total+val;
         }
         else {
             total = total+pred;
@@ -441,7 +441,7 @@ int OLDbfsImplicitQuery(int* bfs, int n, int range, int r) {
             }
         }
 
-        if(q == val) {
+        if(val <= q) {
             total = total+val;
         }
         else {
@@ -485,8 +485,8 @@ int bfsPointerQuery(int* bfs, int n, int range, int r) {
             }
         }
 
-        if(q == val) {
-            total = total+q;
+        if(val <= q) {
+            total = total+val;
         }
         else {
             total = total+pred;
@@ -554,8 +554,8 @@ int vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r
 
         }
 
-        if(q == val) {
-            total = total+q;
+        if(val <= q) {
+            total = total+val;
         }
         else {
             total = total+pred;
@@ -588,7 +588,7 @@ int bfsImplicitQuery(int* bfs, int n, int range, int r) {
             val = bfs[pointer];
         }
 
-        if(q == val) {
+        if(val <= q) {
             total = total+val;
         }
         else {
@@ -597,6 +597,120 @@ int bfsImplicitQuery(int* bfs, int n, int range, int r) {
 
     }
     return total;
+}
+
+int testImplicitBFS(int* bfs, int n, int q) {
+
+    int pointer = 1;
+    int val = bfs[1];
+    int pred = 0;
+    int depth = 1; // Current depth
+    int maxDepth = log2(n+1);
+
+    while (val != q && depth < maxDepth) {
+
+        pointer>>=1;
+        if(q >= val) {
+            pred = val;
+            pointer++;
+        }
+        depth++;
+        val = bfs[pointer];
+    }
+
+    /*int pointer = 1;
+    int val = bfs[1];
+    int pred = 0;
+    int depth = 0; // Current depth
+    int maxDepth = log2(n+1);
+
+    while (val != q) {
+
+        depth++;
+        if(depth > maxDepth) {
+            break;
+        }
+        val = bfs[pointer];
+        if (q < val) {
+            pointer = pointer*2;
+        } else {
+            pred = val;
+            pointer = pointer*2+1;
+        }
+    }*/
+
+    if(val <= q) {
+        return val;
+    }
+    else {
+        return pred;
+    }
+}
+
+int testImplicitVEB(int* veb, int* helper, int* record, int n, int q) {
+
+    int i = 1;
+    int d = 1; // Level of children
+    int pointer = 1;
+    int val = veb[1];
+    int pred = 0;
+    int maxDepth = log2(n+1); // Depth of tree
+
+    record[1] = 1;
+
+    while(val != q && d < maxDepth) {
+
+        i>>=1;
+        if(q >= val) {
+            pred = val;
+            i++;
+        }
+        d++;
+        pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
+        record[d] = pointer;
+        val = veb[pointer];
+
+
+    }
+
+    /*int i = 1;
+    int d = 1;
+    int pointer = 1;
+    int val = veb[1];
+    int pred = 0;
+
+    record[1] = 1;
+
+    while(val != q && pointer > 0) {
+
+        val = veb[pointer];
+        if(q < val) {
+            i = i*2;
+            if(i > n) {
+                break;
+            }
+            d++;
+            pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
+            record[d] = pointer;
+        }
+        else {
+            i = i*2+1;
+            if(i > n) {
+                break;
+            }
+            pred = val;
+            d++;
+            pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
+            record[d] = pointer;
+        }
+    }*/
+
+    if(val <= q) {
+        return val;
+    }
+    else {
+        return pred;
+    }
 }
 
 int OLDvebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r) {
@@ -638,8 +752,8 @@ int OLDvebImplicitQuery(int* veb, int* helper, int* record, int n, int range, in
             }
         }
 
-        if(q == val) {
-            total = total+q;
+        if(val <= q) {
+            total = total+val;
         }
         else {
             total = total+pred;
@@ -684,8 +798,8 @@ int vebPointerQuery(int* veb, int range, int r) {
             }
         }
 
-        if(q == val) {
-            total = total+q;
+        if(val <= q) {
+            total = total+val;
         }
         else {
             total = total+pred;
@@ -1526,17 +1640,76 @@ void skewedTest(int n, int r, int gap) {
 
 }
 
-void queryTest() {
+void queryTest(int n, int gap, int r) {
 
-    int n = pow(2,15)-1;
-    int* array = new int[n+1];
+    int* arraySorted = new int[n+1];
+    int* arrayRandom = new int[n+1];
     for(int i = 1; i <= n; i++) {
-        array[i] = (rand() % (n)) + 1;
+        arraySorted[i] = i;
+    }
+    for(int i = 1; i <= n; i++) {
+        arrayRandom[i] = (rand() % (n*gap)) + 1;
+    }
+    std::sort(arrayRandom+1,arrayRandom+n+1);
+
+    int h = log2(n+1);
+
+    int* bfsSorted = new int[n+1];
+    int* bfsRandom = new int[n+1];
+    int* vebSorted = new int[n+1];
+    int* vebRandom = new int[n+1];
+    int* helper = new int[h*3+1];
+    int* record = new int[h+1];
+
+    buildBFSArray(bfsSorted,arraySorted,1,n,1);
+    buildBFSArray(bfsRandom,arrayRandom,1,n,1);
+    buildVEBhelper(helper,h,h,1,false);
+    buildVEBBasedOnBFS(bfsSorted,vebSorted,1,n,1);
+    buildVEBBasedOnBFS(bfsRandom,vebRandom,1,n,1);
+
+    for(int i = 0; i < r; i++) {
+
+        int q = (rand() % n) + 1;
+        int x = testImplicitBFS(bfsSorted,n,q);
+        int y = testImplicitVEB(vebSorted,helper,record,n,q);
+        if(x != q) {
+            cout << "DFS Sorted returned wrong int: " << q << " " << x << '\n';
+        }
+        if(y != q) {
+            cout << "VEB Sorted returned wrong int: " << q << " " << y << '\n';
+        }
+        if(x != y) {
+            cout << "Mismatch in sorted " << q << " " << x << " " << y << '\n';
+        }
+    }
+
+    for(int i = 0; i < r; i++) {
+
+        int q = (rand() % (n*gap)) + 1;
+        int x = testImplicitBFS(bfsRandom,n,q);
+        int y = testImplicitVEB(vebRandom,helper,record,n,q);
+        if(x > q) {
+            cout << "DFS Random returned wrong int: " << q << " " << x << '\n';
+        }
+        if(y > q) {
+            cout << "VEB Random returned wrong int: " << q << " " << y << '\n';
+        }
+        if(x != y) {
+            cout << "Mismatch in random " << q << " " << x << " " << y << '\n';
+            int real = 0;
+            int j = 1;
+            while(arrayRandom[j] <= q) {
+                real = arrayRandom[j];
+                j++;
+            }
+            cout << "Real value was " << real << '\n';
+        }
     }
 
 
 
 }
+
 
 
 int main(int argc, char* argv[]) {
@@ -1546,9 +1719,9 @@ int main(int argc, char* argv[]) {
         cout << "Syntax is  <test> <runs> <power> <gap>\n";
         //n = 4;
         r = 1000000;
-        power = 24;
+        power = 15;
         n = pow(2,power)-1;
-        test = 2;
+        test = 4;
         gap = 1;
     }
     else {
@@ -1568,6 +1741,9 @@ int main(int argc, char* argv[]) {
     }
     else if(test == 3) {
         skewedTest(n,r,gap);
+    }
+    else if(test == 4) {
+        queryTest(n,gap,r);
     }
 
 
