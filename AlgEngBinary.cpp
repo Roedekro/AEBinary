@@ -239,7 +239,7 @@ int inorderImplictQuery(int* array, int n, int range, int r) {
 
         //cout << "Found " << array[i] << " and " << pred << '\n';
 
-        if(array[i] <= q) {
+        if(array[i] == q) {
             total = total+array[i];
         }
         else {
@@ -277,7 +277,7 @@ int objectPointerQuery(BinaryNode* root, int range, int r) {
             }
 
         }
-        if(node && node->value <= q) {
+        if(node && node->value == q) {
             total = total+node->value;
         }
         else if(pred){
@@ -330,7 +330,7 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
 
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -382,7 +382,7 @@ int dfsPointerQuery(int* dfs, int n, int range, int r) {
             }
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -441,7 +441,7 @@ int OLDbfsImplicitQuery(int* bfs, int n, int range, int r) {
             }
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -485,7 +485,7 @@ int bfsPointerQuery(int* bfs, int n, int range, int r) {
             }
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -554,7 +554,7 @@ int vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r
 
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -588,7 +588,7 @@ int bfsImplicitQuery(int* bfs, int n, int range, int r) {
             val = bfs[pointer];
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -601,7 +601,7 @@ int bfsImplicitQuery(int* bfs, int n, int range, int r) {
 
 int testImplicitBFS(int* bfs, int n, int q) {
 
-    int pointer = 1;
+    /*int pointer = 1;
     int val = bfs[1];
     int pred = 0;
     int depth = 1; // Current depth
@@ -616,9 +616,9 @@ int testImplicitBFS(int* bfs, int n, int q) {
         }
         depth++;
         val = bfs[pointer];
-    }
+    }*/
 
-    /*int pointer = 1;
+    int pointer = 1;
     int val = bfs[1];
     int pred = 0;
     int depth = 0; // Current depth
@@ -637,9 +637,9 @@ int testImplicitBFS(int* bfs, int n, int q) {
             pred = val;
             pointer = pointer*2+1;
         }
-    }*/
+    }
 
-    if(val <= q) {
+    if(val == q) {
         return val;
     }
     else {
@@ -649,7 +649,7 @@ int testImplicitBFS(int* bfs, int n, int q) {
 
 int testImplicitVEB(int* veb, int* helper, int* record, int n, int q) {
 
-    int i = 1;
+    /*int i = 1;
     int d = 1; // Level of children
     int pointer = 1;
     int val = veb[1];
@@ -671,9 +671,9 @@ int testImplicitVEB(int* veb, int* helper, int* record, int n, int q) {
         val = veb[pointer];
 
 
-    }
+    }*/
 
-    /*int i = 1;
+    int i = 1;
     int d = 1;
     int pointer = 1;
     int val = veb[1];
@@ -694,18 +694,18 @@ int testImplicitVEB(int* veb, int* helper, int* record, int n, int q) {
             record[d] = pointer;
         }
         else {
+            pred = val;
             i = i*2+1;
             if(i > n) {
                 break;
             }
-            pred = val;
             d++;
             pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
             record[d] = pointer;
         }
-    }*/
+    }
 
-    if(val <= q) {
+    if(val == q) {
         return val;
     }
     else {
@@ -741,18 +741,18 @@ int OLDvebImplicitQuery(int* veb, int* helper, int* record, int n, int range, in
                 record[d] = pointer;
             }
             else {
+                pred = val;
                 i = i*2+1;
                 if(i > n) {
                     break;
                 }
-                pred = val;
                 d++;
                 pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
                 record[d] = pointer;
             }
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -798,7 +798,7 @@ int vebPointerQuery(int* veb, int range, int r) {
             }
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
