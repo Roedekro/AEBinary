@@ -603,11 +603,15 @@ int bfsImplicitQuery(int* bfs, int n, int range, int r) {
 
 int testImplicitBFS(int* bfs, int n, int q) {
 
+    int maxDepth = log2(n+1);
+
+    // INDSÆT NEDENUNDER
+
     int pointer = 1;
     int val = bfs[1];
     int pred = 0;
     int depth = 1; // Current depth
-    int maxDepth = log2(n+1);
+
 
     while (val != q && depth < maxDepth) {
 
@@ -651,12 +655,16 @@ int testImplicitBFS(int* bfs, int n, int q) {
 
 int testImplicitVEB(int* veb, int* helper, int* record, int n, int q) {
 
+    int maxDepth = log2(n+1); // Depth of tree
+
+    // INDSÆT NEDENUNDER
+
     int i = 1;
     int d = 1; // Level of children
     int pointer = 1;
     int val = veb[1];
     int pred = 0;
-    int maxDepth = log2(n+1); // Depth of tree
+
 
     record[1] = 1;
 
