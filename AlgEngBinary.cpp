@@ -305,7 +305,7 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
         int pred = 0;
         int depth = 0; // Start depth
         int maxDepth = log2(n+1);
-        //int p = n+1;
+        int p = n+1;
 
         while(val != q ) {
 
@@ -316,14 +316,14 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
 
             val = dfs[pointer];
             //cout << q << " " << val << " " << pointer << '\n';
-            //p = p >> 1;
+            p = p >> 1;
             if(q < val) {
                 pointer = pointer+1;
             }
             else {
                 pred = val;
                 int d = maxDepth-depth;
-                int p = pow(2,d); // 1 for meget
+                //int p = pow(2,d); // 1 for meget
                 //int p = 2 << (d-1);
                 pointer = p+pointer; // sparer +1 her
             }
@@ -331,7 +331,7 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
         }
 
         if(q == val) {
-            total = total+q;
+            total = total+val;
         }
         else {
             total = total+pred;
@@ -414,7 +414,7 @@ int dfsPointerQuery(int* dfs, int n, int range, int r) {
     return total;
 }
 
-int bfsImplicitQuery(int* bfs, int n, int range, int r) {
+int OLDbfsImplicitQuery(int* bfs, int n, int range, int r) {
 
     int total = 0;
     for(int j = 0; j < r; j++) {
@@ -442,7 +442,7 @@ int bfsImplicitQuery(int* bfs, int n, int range, int r) {
         }
 
         if(q == val) {
-            total = total+q;
+            total = total+val;
         }
         else {
             total = total+pred;
@@ -524,6 +524,82 @@ int posQuery(int d, int i, int* helper, int* record) {
 }
 
 int vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r) {
+
+    int total = 0;
+    for(int j = 0; j < r; j++) {
+
+        int q = (rand() % range) + 1;
+
+        int i = 1;
+        int d = 1; // Level of children
+        int pointer = 1;
+        int val = veb[1];
+        int pred = 0;
+        int maxDepth = log2(n+1); // Depth of tree
+
+        record[1] = 1;
+
+        while(val != q && d < maxDepth) {
+
+            i>>=1;
+            if(q >= val) {
+                pred = val;
+                i++;
+            }
+            d++;
+            pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
+            record[d] = pointer;
+            val = veb[pointer];
+
+
+        }
+
+        if(q == val) {
+            total = total+q;
+        }
+        else {
+            total = total+pred;
+        }
+
+    }
+    return total;
+}
+
+int bfsImplicitQuery(int* bfs, int n, int range, int r) {
+
+    int total = 0;
+    for(int j = 0; j < r; j++) {
+
+        int q = (rand() % range) + 1;
+        int pointer = 1;
+        int val = bfs[1];
+        int pred = 0;
+        int depth = 1; // Current depth
+        int maxDepth = log2(n+1);
+
+        while (val != q && depth < maxDepth) {
+
+            pointer>>=1;
+            if(q >= val) {
+                pred = val;
+                pointer++;
+            }
+            depth++;
+            val = bfs[pointer];
+        }
+
+        if(q == val) {
+            total = total+val;
+        }
+        else {
+            total = total+pred;
+        }
+
+    }
+    return total;
+}
+
+int OLDvebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r) {
 
     int total = 0;
     for(int j = 0; j < r; j++) {
