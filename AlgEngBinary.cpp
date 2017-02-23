@@ -1720,6 +1720,117 @@ void queryTest(int n, int gap, int r) {
 
 }
 
+void iterationTest(int power, int gap, int r) {
+
+    int* newBFS = new int[power-9];
+    int* oldBFS = new int[power-9];
+    int* newVEB = new int[power-9];
+    int* oldVEB = new int[power-9];
+
+    for(int j = 10; j <= power; j++) {
+
+        int n = pow(2,j) + 1;
+
+        int* arrayRandom = new int[n+1];
+
+        for(int i = 1; i <= n; i++) {
+            arrayRandom[i] = (rand() % (n*gap)) + 1;
+        }
+        std::sort(arrayRandom+1,arrayRandom+n+1);
+
+        int h = log2(n+1);
+
+
+        int* bfsRandom = new int[n+1];
+        int* vebRandom = new int[n+1];
+        int* helper = new int[h*3+1];
+        int* record = new int[h+1];
+
+        buildBFSArray(bfsRandom,arrayRandom,1,n,1);
+        buildVEBhelper(helper,h,h,1,false);
+        buildVEBBasedOnBFS(bfsRandom,vebRandom,1,n,1);
+
+        typedef std::chrono::system_clock Clock;
+        auto start = Clock::now();
+
+        int out1 = bfsImplicitQuery(bfsRandom,n,n*gap,r);
+
+        auto stop = Clock::now();
+        auto total = stop-start;
+        long millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        newBFS[j-10] = millis;
+        cerr << out1 << '\n';
+
+        int out2 = bfsImplicitQuery(bfsRandom,n,n*gap,r);
+
+        cerr << out2 << '\n';
+
+
+
+        start = Clock::now();
+
+        int out3 = OLDbfsImplicitQuery(bfsRandom,n,n*gap,r);
+
+        stop = Clock::now();
+        total = stop-start;
+        millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        oldBFS[j-10] = millis;
+        cerr << out3 << '\n';
+
+        int out4 = OLDbfsImplicitQuery(bfsRandom,n,n*gap,r);
+
+        cerr << out4 << '\n';
+
+
+
+        start = Clock::now();
+
+        int out5 = vebImplicitQuery(vebRandom,helper,record,n,n*gap,r);
+
+        stop = Clock::now();
+        total = stop-start;
+        millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        newVEB[j-10] = millis;
+        cerr << out5 << '\n';
+
+        int out6 = vebImplicitQuery(vebRandom,helper,record,n,n*gap,r);
+
+        cerr << out6 << '\n';
+
+
+
+        start = Clock::now();
+
+        int out7 = OLDvebImplicitQuery(vebRandom,helper,record,n,n*gap,r);
+
+        stop = Clock::now();
+        total = stop-start;
+        millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        oldVEB[j-10] = millis;
+        cerr << out7 << '\n';
+
+        int out8 = OLDvebImplicitQuery(vebRandom,helper,record,n,n*gap,r);
+
+        cerr << out8 << '\n';
+
+
+        delete[] bfsRandom;
+        delete[] vebRandom;
+        delete[] helper;
+        delete[] record;
+
+
+    }
+
+    for(int i = 0; i < power-9; i++) {
+        cout << i << " " << newBFS << " " << newVEB << " " << oldBFS << " " << oldVEB << '\n';
+    }
+
+
+
+
+}
+
 
 
 int main(int argc, char* argv[]) {
@@ -1754,6 +1865,9 @@ int main(int argc, char* argv[]) {
     }
     else if(test == 4) {
         queryTest(n,gap,r);
+    }
+    else if(test == 5) {
+        iterationTest(power,gap,r);
     }
 
 
