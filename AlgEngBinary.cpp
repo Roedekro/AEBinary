@@ -223,7 +223,7 @@ int inorderImplictQuery(int* array, int n, int range, int r) {
 
         //cout << "Found " << array[i] << " and " << pred << '\n';
 
-        if(array[i] <= q) {
+        if(array[i] == q) {
             total = total+array[i];
         }
         else {
@@ -259,7 +259,7 @@ int objectPointerQuery(BinaryNode* root, int range, int r) {
                 node = node->right;
             }
         }
-        if(node && node->value <= q) {
+        if(node && node->value == q) {
             total = total+node->value;
         }
         else if(pred){
@@ -304,7 +304,7 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
             pred = pred ^ ((pred ^ val) & -(q >= val));
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -349,7 +349,7 @@ int dfsPointerQuery(int* dfs, int n, int range, int r) {
             pred = pred ^ ((pred ^ val) & -(q >= val));
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -408,7 +408,7 @@ int OLDbfsImplicitQuery(int* bfs, int n, int range, int r) {
             }
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -448,7 +448,7 @@ int bfsPointerQuery(int* bfs, int n, int range, int r) {
             pred = pred ^ ((pred ^ val) & -(q >= val));
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -489,7 +489,7 @@ int posQuery(int d, int i, int* helper, int* record) {
 int vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r) {
 
     int total = 0;
-    int maxDepth = log2(n+1); // Depth of tree, never changed so can be called outside loop
+    int maxDepth = log2(n+1); // Depth of tree
     for(int j = 0; j < r; j++) {
 
         int q = (rand() % range) + 1;
@@ -506,13 +506,15 @@ int vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r
             i>>=1;
             pred = pred ^ ((val ^ pred) & -(q >= val));
             i += (q >= val);
+
+            }
             d++;
             pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
             record[d] = pointer;
             val = veb[pointer];
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -526,20 +528,23 @@ int vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r
 int bfsImplicitQuery(int* bfs, int n, int range, int r) {
 
     int total = 0;
+    int maxDepth = log2(n+1);
     for(int j = 0; j < r; j++) {
 
         int q = (rand() % range) + 1;
         int pointer = 1;
         int val = bfs[1];
         int pred = 0;
+        int depth = 1; // Current depth
+
 
         while (val != q && pointer < n) {
             pred = pred ^ ((val ^ pred) & -(q >= val));
-            pointer <<= 1; // shouldn't this be right shift?
+            pointer <<= 1;
             pointer += (q >= val);
             val = bfs[pointer];
         }
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -551,15 +556,19 @@ int bfsImplicitQuery(int* bfs, int n, int range, int r) {
 
 int testImplicitBFS(int* bfs, int n, int q) {
 
+    int maxDepth = log2(n+1);
+
+    // INDSÆT NEDENUNDER
+
     int pointer = 1;
     int val = bfs[1];
     int pred = 0;
     int depth = 1; // Current depth
-    int maxDepth = log2(n+1);
+
 
     while (val != q && depth < maxDepth) {
 
-        pointer>>=1;
+        pointer<<=1;
         if(q >= val) {
             pred = val;
             pointer++;
@@ -589,7 +598,7 @@ int testImplicitBFS(int* bfs, int n, int q) {
         }
     }*/
 
-    if(val <= q) {
+    if(val == q) {
         return val;
     }
     else {
@@ -599,18 +608,22 @@ int testImplicitBFS(int* bfs, int n, int q) {
 
 int testImplicitVEB(int* veb, int* helper, int* record, int n, int q) {
 
+    int maxDepth = log2(n+1); // Depth of tree
+
+    // INDSÆT NEDENUNDER
+
     int i = 1;
     int d = 1; // Level of children
     int pointer = 1;
     int val = veb[1];
     int pred = 0;
-    int maxDepth = log2(n+1); // Depth of tree
+
 
     record[1] = 1;
 
     while(val != q && d < maxDepth) {
 
-        i>>=1;
+        i<<=1;
         if(q >= val) {
             pred = val;
             i++;
@@ -644,18 +657,18 @@ int testImplicitVEB(int* veb, int* helper, int* record, int n, int q) {
             record[d] = pointer;
         }
         else {
+            pred = val;
             i = i*2+1;
             if(i > n) {
                 break;
             }
-            pred = val;
             d++;
             pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
             record[d] = pointer;
         }
     }*/
 
-    if(val <= q) {
+    if(val == q) {
         return val;
     }
     else {
@@ -691,18 +704,18 @@ int OLDvebImplicitQuery(int* veb, int* helper, int* record, int n, int range, in
                 record[d] = pointer;
             }
             else {
+                pred = val;
                 i = i*2+1;
                 if(i > n) {
                     break;
                 }
-                pred = val;
                 d++;
                 pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
                 record[d] = pointer;
             }
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -748,7 +761,7 @@ int vebPointerQuery(int* veb, int range, int r) {
             }
         }
 
-        if(val <= q) {
+        if(val == q) {
             total = total+val;
         }
         else {
@@ -1661,6 +1674,117 @@ void queryTest(int n, int gap, int r) {
 
 }
 
+void iterationTest(int power, int gap, int r) {
+
+    int* newBFS = new int[power-9];
+    int* oldBFS = new int[power-9];
+    int* newVEB = new int[power-9];
+    int* oldVEB = new int[power-9];
+
+    for(int j = 10; j <= power; j++) {
+
+        int n = pow(2,j) + 1;
+
+        int* arrayRandom = new int[n+1];
+
+        for(int i = 1; i <= n; i++) {
+            arrayRandom[i] = (rand() % (n*gap)) + 1;
+        }
+        std::sort(arrayRandom+1,arrayRandom+n+1);
+
+        int h = log2(n+1);
+
+
+        int* bfsRandom = new int[n+1];
+        int* vebRandom = new int[n+1];
+        int* helper = new int[h*3+1];
+        int* record = new int[h+1];
+
+        buildBFSArray(bfsRandom,arrayRandom,1,n,1);
+        buildVEBhelper(helper,h,h,1,false);
+        buildVEBBasedOnBFS(bfsRandom,vebRandom,1,n,1);
+
+        typedef std::chrono::system_clock Clock;
+        auto start = Clock::now();
+
+        int out1 = bfsImplicitQuery(bfsRandom,n,n*gap,r);
+
+        auto stop = Clock::now();
+        auto total = stop-start;
+        long millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        newBFS[j-10] = millis;
+        cerr << out1 << '\n';
+
+        int out2 = bfsImplicitQuery(bfsRandom,n,n*gap,r);
+
+        cerr << out2 << '\n';
+
+
+
+        start = Clock::now();
+
+        int out3 = OLDbfsImplicitQuery(bfsRandom,n,n*gap,r);
+
+        stop = Clock::now();
+        total = stop-start;
+        millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        oldBFS[j-10] = millis;
+        cerr << out3 << '\n';
+
+        int out4 = OLDbfsImplicitQuery(bfsRandom,n,n*gap,r);
+
+        cerr << out4 << '\n';
+
+
+
+        start = Clock::now();
+
+        int out5 = vebImplicitQuery(vebRandom,helper,record,n,n*gap,r);
+
+        stop = Clock::now();
+        total = stop-start;
+        millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        newVEB[j-10] = millis;
+        cerr << out5 << '\n';
+
+        int out6 = vebImplicitQuery(vebRandom,helper,record,n,n*gap,r);
+
+        cerr << out6 << '\n';
+
+
+
+        start = Clock::now();
+
+        int out7 = OLDvebImplicitQuery(vebRandom,helper,record,n,n*gap,r);
+
+        stop = Clock::now();
+        total = stop-start;
+        millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+        oldVEB[j-10] = millis;
+        cerr << out7 << '\n';
+
+        int out8 = OLDvebImplicitQuery(vebRandom,helper,record,n,n*gap,r);
+
+        cerr << out8 << '\n';
+
+
+        delete[] bfsRandom;
+        delete[] vebRandom;
+        delete[] helper;
+        delete[] record;
+
+
+    }
+
+    for(int i = 0; i < power-9; i++) {
+        cout << i << " " << newBFS << " " << newVEB << " " << oldBFS << " " << oldVEB << '\n';
+    }
+
+
+
+
+}
+
 
 
 int main(int argc, char* argv[]) {
@@ -1695,6 +1819,9 @@ int main(int argc, char* argv[]) {
     }
     else if(test == 4) {
         queryTest(n,gap,r);
+    }
+    else if(test == 5) {
+        iterationTest(power,gap,r);
     }
 
 
