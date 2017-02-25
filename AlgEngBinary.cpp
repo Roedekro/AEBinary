@@ -1729,7 +1729,7 @@ void iterationTest(int power, int gap, int r) {
 
     for(int j = 10; j <= power; j++) {
 
-        int n = pow(2,j) + 1;
+        int n = pow(2,j) - 1;
 
         int* arrayRandom = new int[n+1];
 
@@ -1823,7 +1823,7 @@ void iterationTest(int power, int gap, int r) {
     }
 
     for(int i = 0; i < power-9; i++) {
-        cout << i << " " << newBFS << " " << newVEB << " " << oldBFS << " " << oldVEB << '\n';
+        cout << i+10 << " " << newBFS[i] << " " << newVEB[i] << " " << oldBFS[i] << " " << oldVEB[i] << '\n';
     }
 
 
@@ -1842,7 +1842,7 @@ int main(int argc, char* argv[]) {
         r = 1000000;
         power = 15;
         n = pow(2,power)-1;
-        test = 4;
+        test = 5;
         gap = 1;
     }
     else {
