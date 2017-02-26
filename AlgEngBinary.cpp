@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include "BinaryNode.h"
 #include <time.h>
-//#include <windows.h>
+#include <windows.h>
 #include <cmath>
 #include <algorithm>
 #include <cstdio>
@@ -543,10 +543,12 @@ int vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r
         while(val != q && d < maxDepth) {
 
             i<<=1;
-            if(q >= val) {
+            pred = pred ^ ((val ^ pred) & -(q >= val));
+            i += (q >= val);
+            /*if(q >= val) {
                 pred = val;
                 i++;
-            }
+            }*/
             d++;
             pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
             record[d] = pointer;
@@ -582,10 +584,12 @@ int bfsImplicitQuery(int* bfs, int n, int range, int r) {
         while (val != q && depth < maxDepth) {
 
             pointer<<=1;
-            if(q >= val) {
+            pred = pred ^ ((val ^ pred) & -(q >= val));
+            pointer += (q >= val);
+            /*if(q >= val) {
                 pred = val;
                 pointer++;
-            }
+            }*/
             depth++;
             val = bfs[pointer];
         }
@@ -616,13 +620,17 @@ int testImplicitBFS(int* bfs, int n, int q) {
     while (val != q && depth < maxDepth) {
 
         pointer<<=1;
-        if(q >= val) {
+        pred = pred ^ ((val ^ pred) & -(q >= val));
+        pointer += (q >= val);
+        /*if(q >= val) {
             pred = val;
             pointer++;
-        }
+        }*/
         depth++;
         val = bfs[pointer];
     }
+
+    //cout << depth << " " << maxDepth << '\n';
 
     /*int pointer = 1;
     int val = bfs[1];
@@ -671,10 +679,12 @@ int testImplicitVEB(int* veb, int* helper, int* record, int n, int q) {
     while(val != q && d < maxDepth) {
 
         i<<=1;
-        if(q >= val) {
+        pred = pred ^ ((val ^ pred) & -(q >= val));
+        i += (q >= val);
+        /*if(q >= val) {
             pred = val;
             i++;
-        }
+        }*/
         d++;
         pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
         record[d] = pointer;
@@ -1714,6 +1724,19 @@ void queryTest(int n, int gap, int r) {
             }
             cout << "Real value was " << real << '\n';
         }
+
+        /*int real = 0;
+        int j = 1;
+        while(arrayRandom[j] <= q) {
+            real = arrayRandom[j];
+            j++;
+        }
+        if(x != real) {
+            cout << "Real value was " << real << '\n';
+        }
+        else {
+            cout << "Success\n";
+        }*/
     }
 
 
@@ -1721,6 +1744,10 @@ void queryTest(int n, int gap, int r) {
 }
 
 void iterationTest(int power, int gap, int r) {
+
+    //SYSTEMTIME  system_time;
+
+    //long tidStart, tidStop, totalTid;
 
     int* newBFS = new int[power-9];
     int* oldBFS = new int[power-9];
@@ -1730,6 +1757,7 @@ void iterationTest(int power, int gap, int r) {
     for(int j = 10; j <= power; j++) {
 
         int n = pow(2,j) - 1;
+        //cout << "Power of 2 to " << j << " is " <<n<<'\n';
 
         int* arrayRandom = new int[n+1];
 
@@ -1750,6 +1778,10 @@ void iterationTest(int power, int gap, int r) {
         buildVEBhelper(helper,h,h,1,false);
         buildVEBBasedOnBFS(bfsRandom,vebRandom,1,n,1);
 
+        //GetSystemTime(&system_time);
+        //tidStart = (long) (system_time.wHour*3600000) + (system_time.wMinute*60000) + (system_time.wSecond * 1000) + system_time.wMilliseconds;
+
+
         typedef std::chrono::system_clock Clock;
         auto start = Clock::now();
 
@@ -1758,6 +1790,15 @@ void iterationTest(int power, int gap, int r) {
         auto stop = Clock::now();
         auto total = stop-start;
         long millis = std::chrono::duration_cast<std::chrono::milliseconds>(total).count();
+
+        //GetSystemTime(&system_time);
+        //tidStop = (long) (system_time.wHour*3600000) + (system_time.wMinute*60000) + (system_time.wSecond * 1000) + system_time.wMilliseconds;
+        //totalTid = tidStop - tidStart;
+
+        //cout << totalTid << '\t' << millis << '\n';
+
+
+
         newBFS[j-10] = millis;
         cerr << out1 << '\n';
 
@@ -1840,9 +1881,9 @@ int main(int argc, char* argv[]) {
         cout << "Syntax is  <test> <runs> <power> <gap>\n";
         //n = 4;
         r = 1000000;
-        power = 15;
+        power = 24;
         n = pow(2,power)-1;
-        test = 5;
+        test = 4;
         gap = 1;
     }
     else {
