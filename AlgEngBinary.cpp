@@ -211,30 +211,14 @@ int inorderImplictQuery(int* array, int n, int range, int r) {
         //cout << "---Run " << j << " " << q << '\n';
 
         while(val != q) {
-
-            /*if(y-x == 1) {
-                if(val == q) break;
-                else if(array[i+1] <= q) {
-                    i++;
-                }
-                break;
-            }*/
-            if(y-x==0) {
+            if(y==x) {
                 break;
             }
-
-            //cout << i << "," << x << "," << y << "," << val << '\n';
-            if(q < val) {
-                y = i-1;
-                i = (y+x)/2;
-                val = array[i];
-            }
-            else {
-                pred = val;
-                x = i+1;
-                i = (y+x)/2;
-                val = array[i];
-            }
+            int pred = pred ^ ((pred ^ val) & -(q >= val));
+            int y = y ^ (((i-1) ^ y) & -(q < val));
+            int x = x ^ (((i+1) ^ x) & -(q >= val));
+            i = (y+x)/2;
+            val = array[i];
         }
 
         //cout << "Found " << array[i] << " and " << pred << '\n';
@@ -267,7 +251,6 @@ int objectPointerQuery(BinaryNode* root, int range, int r) {
         BinaryNode* node = root;
         BinaryNode* pred = NULL;
         while(node && node->value != q) {
-
             if(q < node-> value) {
                 node = node->left;
             }
@@ -275,7 +258,6 @@ int objectPointerQuery(BinaryNode* root, int range, int r) {
                 pred = node;
                 node = node->right;
             }
-
         }
         if(node && node->value == q) {
             total = total+node->value;
@@ -296,6 +278,7 @@ int objectPointerQuery(BinaryNode* root, int range, int r) {
 int dfsImplicitQuery(int* dfs, int n, int range, int r) {
 
     int total = 0;
+    int maxDepth = log2(n+1);
     for(int j = 0; j < r; j++) {
 
         int q = (rand() % range) + 1;
@@ -304,7 +287,6 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
         int val = dfs[1];
         int pred = 0;
         int depth = 0; // Start depth
-        int maxDepth = log2(n+1);
         int p = n+1;
 
         while(val != q ) {
@@ -315,19 +297,11 @@ int dfsImplicitQuery(int* dfs, int n, int range, int r) {
             }
 
             val = dfs[pointer];
-            //cout << q << " " << val << " " << pointer << '\n';
             p = p >> 1;
-            if(q < val) {
-                pointer = pointer+1;
-            }
-            else {
-                pred = val;
-                int d = maxDepth-depth;
-                //int p = pow(2,d); // 1 for meget
-                //int p = 2 << (d-1);
-                pointer = p+pointer; // sparer +1 her
-            }
 
+            int left = pointer+1, right = pointer+p;
+            pointer = right ^ ((right ^ left) & -(q < val));
+            pred = pred ^ ((pred ^ val) & -(q >= val));
         }
 
         if(val == q) {
@@ -368,18 +342,11 @@ int dfsPointerQuery(int* dfs, int n, int range, int r) {
         int val = dfs[1];
         int pred = 0;
 
-        while(val != q && pointer > 0) {
-
-            //cout << val << " " << pointer << '\n';
-
+        while (val != q && pointer > 0) {
             val = dfs[pointer];
-            if(q < val) {
-                pointer = dfs[pointer+2];
-            }
-            else {
-                pred = val;
-                pointer = dfs[pointer+3];
-            }
+            int left = pointer+2, right = pointer+3;
+            pointer = dfs[right ^ ((right ^ left) & -(q < val))];
+            pred = pred ^ ((pred ^ val) & -(q >= val));
         }
 
         if(val == q) {
@@ -475,14 +442,10 @@ int bfsPointerQuery(int* bfs, int n, int range, int r) {
         int pred = 0;
 
         while (val != q && pointer > 0) {
-
             val = bfs[pointer];
-            if (q < val) {
-                pointer = bfs[pointer + 2];
-            } else {
-                pred = val;
-                pointer = bfs[pointer + 3];
-            }
+            int left = pointer+2, right = pointer+3;
+            pointer = bfs[right ^ ((right ^ left) & -(q < val))];
+            pred = pred ^ ((pred ^ val) & -(q >= val));
         }
 
         if(val == q) {
@@ -537,22 +500,18 @@ int vebImplicitQuery(int* veb, int* helper, int* record, int n, int range, int r
         int val = veb[1];
         int pred = 0;
 
-
         record[1] = 1;
 
         while(val != q && d < maxDepth) {
+            i>>=1;
+            pred = pred ^ ((val ^ pred) & -(q >= val));
+            i += (q >= val);
 
-            i<<=1;
-            if(q >= val) {
-                pred = val;
-                i++;
             }
             d++;
             pointer = record[helper[d*3]] + helper[d*3-1] + ((i & helper[d*3-1])*helper[d*3-2]);
             record[d] = pointer;
             val = veb[pointer];
-
-
         }
 
         if(val == q) {
@@ -579,24 +538,18 @@ int bfsImplicitQuery(int* bfs, int n, int range, int r) {
         int depth = 1; // Current depth
 
 
-        while (val != q && depth < maxDepth) {
-
-            pointer<<=1;
-            if(q >= val) {
-                pred = val;
-                pointer++;
-            }
-            depth++;
+        while (val != q && pointer < n) {
+            pred = pred ^ ((val ^ pred) & -(q >= val));
+            pointer <<= 1;
+            pointer += (q >= val);
             val = bfs[pointer];
         }
-
         if(val == q) {
             total = total+val;
         }
         else {
             total = total+pred;
         }
-
     }
     return total;
 }
@@ -1415,6 +1368,7 @@ void pointerTest(int r, int power, int gap) {
         std::sort(array+1,array+n+1);
 
         int height = log2(n+1);
+
 
         int* implicitBFS = new int[n+1];
         int* pointerBFS = new int[n*4+1];
